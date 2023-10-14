@@ -108,12 +108,18 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	solomachine "github.com/cosmos/ibc-go/v7/modules/light-clients/06-solomachine"
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 
 	cosmwasmlifecyclemodule "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle"
 	cosmwasmlifecyclemodulekeeper "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/keeper"
 	cosmwasmlifecyclemoduletypes "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
+
+	"github.com/CosmWasm/wasmd/x/wasm"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
 	appparams "github.com/emidev98/cosmwasm-lifecycle/app/params"
 	"github.com/emidev98/cosmwasm-lifecycle/docs"
@@ -243,6 +249,7 @@ type App struct {
 	FeeGrantKeeper        feegrantkeeper.Keeper
 	GroupKeeper           groupkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
+	WasmKeeper            wasmkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -519,13 +526,41 @@ func New(
 		),
 	)
 
+	// The last arguments can contain custom message handlers, and custom query handlers,
+	// if we want to allow any custom callbacks
+	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	if err != nil {
+		panic(fmt.Sprintf("error while reading wasm config: %s", err))
+	}
+	availableCapabilities := "iterator,staking,stargate,cosmwasm_1_1,cosmwasm_1_2,cosmwasm_1_3,cosmwasm_1_4"
+	app.WasmKeeper = wasmkeeper.NewKeeper(
+		appCodec,
+		keys[wasmtypes.StoreKey],
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+		distrkeeper.NewQuerier(app.DistrKeeper),
+		app.IBCKeeper.ChannelKeeper, // ISC4 Wrapper: fee IBC middleware
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		app.CapabilityKeeper.ScopeToModule(wasmtypes.ModuleName),
+		app.TransferKeeper,
+		app.MsgServiceRouter(),
+		app.GRPCQueryRouter(),
+		filepath.Join(homePath, "data"), // WASM DIR
+		wasmConfig,
+		availableCapabilities,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		GetWasmOpts(app, appOpts)...,
+	)
+
 	app.CosmwasmlifecycleKeeper = *cosmwasmlifecyclemodulekeeper.NewKeeper(
 		appCodec,
 		keys[cosmwasmlifecyclemoduletypes.StoreKey],
 		keys[cosmwasmlifecyclemoduletypes.MemStoreKey],
 		app.GetSubspace(cosmwasmlifecyclemoduletypes.ModuleName),
 	)
-	cosmwasmlifecycleModule := cosmwasmlifecyclemodule.NewAppModule(appCodec, app.CosmwasmlifecycleKeeper, app.AccountKeeper, app.BankKeeper)
+	cosmwasmlifecycleModule := cosmwasmlifecyclemodule.NewAppModule(appCodec, app.CosmwasmlifecycleKeeper, app.WasmKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -917,4 +952,13 @@ func (app *App) SimulationManager() *module.SimulationManager {
 // ModuleManager returns the app ModuleManager
 func (app *App) ModuleManager() *module.Manager {
 	return app.mm
+}
+
+// GetWasmOpts build wasm options
+func GetWasmOpts(app *App, appOpts servertypes.AppOptions) []wasmkeeper.Option {
+	var wasmOpts []wasmkeeper.Option
+	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
+		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
+	}
+	return wasmOpts
 }
