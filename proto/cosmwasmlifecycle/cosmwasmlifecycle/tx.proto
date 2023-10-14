@@ -1,0 +1,7 @@
+syntax = "proto3";
+package cosmwasmlifecycle.cosmwasmlifecycle;
+
+option go_package = "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types";
+
+// Msg defines the Msg service.
+service Msg {}
