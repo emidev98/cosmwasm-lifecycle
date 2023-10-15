@@ -14,6 +14,11 @@ const (
 	MemStoreKey = "mem_cosmwasmlifecycle"
 )
 
+var (
+	ParamsKey  = []byte{0x01}
+	StrikesKey = []byte{0x02}
+)
+
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }

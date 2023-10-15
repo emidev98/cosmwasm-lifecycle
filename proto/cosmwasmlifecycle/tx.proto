@@ -1,0 +1,35 @@
+syntax = "proto3";
+package cosmwasmlifecycle;
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc EnableBlockExecution(MsgEnableBlockExecution) returns (MsgEnableBlockExecutionResponse);
+  rpc DisableBlockExecution(MsgDisableBlockExecution) returns (MsgDisableBlockExecutionResponse);
+}
+
+message MsgEnableBlockExecution {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string contract_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  ExecutionType execution = 2 [(gogoproto.nullable) = true];
+}
+message MsgEnableBlockExecutionResponse {}
+
+message MsgDisableBlockExecution {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string contract_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  ExecutionType execution = 2 [(gogoproto.nullable) = true];
+}
+message MsgDisableBlockExecutionResponse {}
+
+enum ExecutionType {
+    BEGIN_BLOCK = 0;
+    END_BLOCK = 1;
+}

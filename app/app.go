@@ -557,8 +557,7 @@ func New(
 	app.CosmwasmlifecycleKeeper = *cosmwasmlifecyclemodulekeeper.NewKeeper(
 		appCodec,
 		keys[cosmwasmlifecyclemoduletypes.StoreKey],
-		keys[cosmwasmlifecyclemoduletypes.MemStoreKey],
-		app.GetSubspace(cosmwasmlifecyclemoduletypes.ModuleName),
+		app.WasmKeeper,
 	)
 	cosmwasmlifecycleModule := cosmwasmlifecyclemodule.NewAppModule(appCodec, app.CosmwasmlifecycleKeeper, app.WasmKeeper)
 
