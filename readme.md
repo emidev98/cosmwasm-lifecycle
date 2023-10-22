@@ -1,6 +1,4 @@
-<center>
-    <h1>CosmWasm Lifecycle Module</h1>
-</center>
+<h1 align="center">CosmWasm Lifecycle Module</h1>
 
 ![IMG](./docs/logo.jpg)
 
