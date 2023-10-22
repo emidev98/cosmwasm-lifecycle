@@ -5,12 +5,18 @@ import (
 	"github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types"
 )
 
-// GetParams get all parameters as types.Params
-func (k Keeper) GetParams(ctx sdk.Context) types.Params {
-	return types.NewParams()
+func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.ParamKey)
+	if bz == nil {
+		return
+	}
+	k.cdc.MustUnmarshal(bz, &params)
+	return
 }
 
-// SetParams set the params
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
-	k.paramstore.SetParamSet(ctx, &params)
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(&params)
+	store.Set(types.ParamKey, bz)
 }

@@ -1,10 +1,10 @@
 syntax = "proto3";
-package cosmwasmlifecycle.cosmwasmlifecycle;
+package cosmwasmlifecycle;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "cosmwasmlifecycle/cosmwasmlifecycle/params.proto";
+import "cosmwasmlifecycle/params.proto";
 
 option go_package = "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types";
 
@@ -12,7 +12,7 @@ option go_package = "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/emidev98/cosmwasm-lifecycle/cosmwasmlifecycle/params";
+    option (google.api.http).get = "/cosmwasmlifecycle/params";
   }
 }
 
