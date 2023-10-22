@@ -2,11 +2,17 @@ syntax = "proto3";
 package cosmwasmlifecycle;
 
 import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
 import "cosmwasmlifecycle/params.proto";
+import "cosmwasmlifecycle/contract.proto";
 
 option go_package = "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types";
 
 // GenesisState defines the cosmwasmlifecycle module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  
+  // Contracts with their current information
+  // about the execution state.
+  repeated Contract contracts = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }

@@ -2,7 +2,6 @@ syntax = "proto3";
 package cosmwasmlifecycle;
 
 import "gogoproto/gogo.proto";
-import "cosmos_proto/cosmos.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types";
@@ -25,12 +24,4 @@ message Params {
   // disabled from end and beging block executions.
   //  When this happens the min_desposit will also be burned.
   int64 strikes_to_disable_execution = 3;
-
-  // Contract Addresses that will execute "{"begin_block": {}}" 
-  // as sudo at the begining of each block
-  repeated string begin_block_execution = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-
-  // Contract Addresses that will execute "{"end_block": {}}"
-  // as sudo at the end of each block
-  repeated string end_block_execution = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }

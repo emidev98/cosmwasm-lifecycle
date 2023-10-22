@@ -20,14 +20,14 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-// CreateContract defines a method for creating a contract
-func (msgServer msgServer) EnableBlockExecution(ctx context.Context, msg *types.MsgEnableBlockExecution) (res *types.MsgEnableBlockExecutionResponse, err error) {
+// Enable a contract execution.
+func (msgServer msgServer) EnableContractBlockExecution(ctx context.Context, msg *types.MsgEnableContractBlockExecution) (res *types.MsgEnableContractBlockExecutionResponse, err error) {
 
 	return res, err
 }
 
-// CreateContract defines a method for creating a contract
-func (msgServer msgServer) DisableBlockExecution(ctx context.Context, msg *types.MsgDisableBlockExecution) (res *types.MsgDisableBlockExecutionResponse, err error) {
+// Disable a contract execution and return the funds to the external account.
+func (msgServer msgServer) DisableContractBlockExecution(ctx context.Context, msg *types.MsgDisableContractBlockExecution) (res *types.MsgDisableContractBlockExecutionResponse, err error) {
 
 	return res, err
 }

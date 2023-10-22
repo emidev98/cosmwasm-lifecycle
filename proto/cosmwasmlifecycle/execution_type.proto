@@ -1,0 +1,10 @@
+syntax = "proto3";
+package cosmwasmlifecycle;
+
+option go_package = "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types";
+
+enum ExecutionType {
+    BEGIN_AND_END_BLOCK = 0;
+    BEGIN_BLOCK = 1;
+    END_BLOCK = 2;
+}

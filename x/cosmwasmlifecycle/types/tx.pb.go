@@ -29,48 +29,23 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type ExecutionType int32
-
-const (
-	ExecutionType_BEGIN_BLOCK ExecutionType = 0
-	ExecutionType_END_BLOCK   ExecutionType = 1
-)
-
-var ExecutionType_name = map[int32]string{
-	0: "BEGIN_BLOCK",
-	1: "END_BLOCK",
-}
-
-var ExecutionType_value = map[string]int32{
-	"BEGIN_BLOCK": 0,
-	"END_BLOCK":   1,
-}
-
-func (x ExecutionType) String() string {
-	return proto.EnumName(ExecutionType_name, int32(x))
-}
-
-func (ExecutionType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_5a8c9d0c2a02a50a, []int{0}
-}
-
-type MsgEnableBlockExecution struct {
+type MsgEnableContractBlockExecution struct {
 	ContractAddress string        `protobuf:"bytes,1,opt,name=contract_address,json=contractAddress,proto3" json:"contract_address,omitempty"`
 	Execution       ExecutionType `protobuf:"varint,2,opt,name=execution,proto3,enum=cosmwasmlifecycle.ExecutionType" json:"execution,omitempty"`
 }
 
-func (m *MsgEnableBlockExecution) Reset()         { *m = MsgEnableBlockExecution{} }
-func (m *MsgEnableBlockExecution) String() string { return proto.CompactTextString(m) }
-func (*MsgEnableBlockExecution) ProtoMessage()    {}
-func (*MsgEnableBlockExecution) Descriptor() ([]byte, []int) {
+func (m *MsgEnableContractBlockExecution) Reset()         { *m = MsgEnableContractBlockExecution{} }
+func (m *MsgEnableContractBlockExecution) String() string { return proto.CompactTextString(m) }
+func (*MsgEnableContractBlockExecution) ProtoMessage()    {}
+func (*MsgEnableContractBlockExecution) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5a8c9d0c2a02a50a, []int{0}
 }
-func (m *MsgEnableBlockExecution) XXX_Unmarshal(b []byte) error {
+func (m *MsgEnableContractBlockExecution) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgEnableBlockExecution) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgEnableContractBlockExecution) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgEnableBlockExecution.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgEnableContractBlockExecution.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -80,33 +55,49 @@ func (m *MsgEnableBlockExecution) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *MsgEnableBlockExecution) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgEnableBlockExecution.Merge(m, src)
+func (m *MsgEnableContractBlockExecution) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgEnableContractBlockExecution.Merge(m, src)
 }
-func (m *MsgEnableBlockExecution) XXX_Size() int {
+func (m *MsgEnableContractBlockExecution) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgEnableBlockExecution) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgEnableBlockExecution.DiscardUnknown(m)
+func (m *MsgEnableContractBlockExecution) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgEnableContractBlockExecution.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgEnableBlockExecution proto.InternalMessageInfo
+var xxx_messageInfo_MsgEnableContractBlockExecution proto.InternalMessageInfo
 
-type MsgEnableBlockExecutionResponse struct {
+func (m *MsgEnableContractBlockExecution) GetContractAddress() string {
+	if m != nil {
+		return m.ContractAddress
+	}
+	return ""
 }
 
-func (m *MsgEnableBlockExecutionResponse) Reset()         { *m = MsgEnableBlockExecutionResponse{} }
-func (m *MsgEnableBlockExecutionResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgEnableBlockExecutionResponse) ProtoMessage()    {}
-func (*MsgEnableBlockExecutionResponse) Descriptor() ([]byte, []int) {
+func (m *MsgEnableContractBlockExecution) GetExecution() ExecutionType {
+	if m != nil {
+		return m.Execution
+	}
+	return ExecutionType_BEGIN_AND_END_BLOCK
+}
+
+type MsgEnableContractBlockExecutionResponse struct {
+}
+
+func (m *MsgEnableContractBlockExecutionResponse) Reset() {
+	*m = MsgEnableContractBlockExecutionResponse{}
+}
+func (m *MsgEnableContractBlockExecutionResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgEnableContractBlockExecutionResponse) ProtoMessage()    {}
+func (*MsgEnableContractBlockExecutionResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5a8c9d0c2a02a50a, []int{1}
 }
-func (m *MsgEnableBlockExecutionResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgEnableContractBlockExecutionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgEnableBlockExecutionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgEnableContractBlockExecutionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgEnableBlockExecutionResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgEnableContractBlockExecutionResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -116,35 +107,35 @@ func (m *MsgEnableBlockExecutionResponse) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-func (m *MsgEnableBlockExecutionResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgEnableBlockExecutionResponse.Merge(m, src)
+func (m *MsgEnableContractBlockExecutionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgEnableContractBlockExecutionResponse.Merge(m, src)
 }
-func (m *MsgEnableBlockExecutionResponse) XXX_Size() int {
+func (m *MsgEnableContractBlockExecutionResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgEnableBlockExecutionResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgEnableBlockExecutionResponse.DiscardUnknown(m)
+func (m *MsgEnableContractBlockExecutionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgEnableContractBlockExecutionResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgEnableBlockExecutionResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgEnableContractBlockExecutionResponse proto.InternalMessageInfo
 
-type MsgDisableBlockExecution struct {
+type MsgDisableContractBlockExecution struct {
 	ContractAddress string        `protobuf:"bytes,1,opt,name=contract_address,json=contractAddress,proto3" json:"contract_address,omitempty"`
 	Execution       ExecutionType `protobuf:"varint,2,opt,name=execution,proto3,enum=cosmwasmlifecycle.ExecutionType" json:"execution,omitempty"`
 }
 
-func (m *MsgDisableBlockExecution) Reset()         { *m = MsgDisableBlockExecution{} }
-func (m *MsgDisableBlockExecution) String() string { return proto.CompactTextString(m) }
-func (*MsgDisableBlockExecution) ProtoMessage()    {}
-func (*MsgDisableBlockExecution) Descriptor() ([]byte, []int) {
+func (m *MsgDisableContractBlockExecution) Reset()         { *m = MsgDisableContractBlockExecution{} }
+func (m *MsgDisableContractBlockExecution) String() string { return proto.CompactTextString(m) }
+func (*MsgDisableContractBlockExecution) ProtoMessage()    {}
+func (*MsgDisableContractBlockExecution) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5a8c9d0c2a02a50a, []int{2}
 }
-func (m *MsgDisableBlockExecution) XXX_Unmarshal(b []byte) error {
+func (m *MsgDisableContractBlockExecution) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgDisableBlockExecution) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDisableContractBlockExecution) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgDisableBlockExecution.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDisableContractBlockExecution.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -154,33 +145,49 @@ func (m *MsgDisableBlockExecution) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *MsgDisableBlockExecution) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgDisableBlockExecution.Merge(m, src)
+func (m *MsgDisableContractBlockExecution) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDisableContractBlockExecution.Merge(m, src)
 }
-func (m *MsgDisableBlockExecution) XXX_Size() int {
+func (m *MsgDisableContractBlockExecution) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgDisableBlockExecution) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgDisableBlockExecution.DiscardUnknown(m)
+func (m *MsgDisableContractBlockExecution) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDisableContractBlockExecution.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgDisableBlockExecution proto.InternalMessageInfo
+var xxx_messageInfo_MsgDisableContractBlockExecution proto.InternalMessageInfo
 
-type MsgDisableBlockExecutionResponse struct {
+func (m *MsgDisableContractBlockExecution) GetContractAddress() string {
+	if m != nil {
+		return m.ContractAddress
+	}
+	return ""
 }
 
-func (m *MsgDisableBlockExecutionResponse) Reset()         { *m = MsgDisableBlockExecutionResponse{} }
-func (m *MsgDisableBlockExecutionResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgDisableBlockExecutionResponse) ProtoMessage()    {}
-func (*MsgDisableBlockExecutionResponse) Descriptor() ([]byte, []int) {
+func (m *MsgDisableContractBlockExecution) GetExecution() ExecutionType {
+	if m != nil {
+		return m.Execution
+	}
+	return ExecutionType_BEGIN_AND_END_BLOCK
+}
+
+type MsgDisableContractBlockExecutionResponse struct {
+}
+
+func (m *MsgDisableContractBlockExecutionResponse) Reset() {
+	*m = MsgDisableContractBlockExecutionResponse{}
+}
+func (m *MsgDisableContractBlockExecutionResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDisableContractBlockExecutionResponse) ProtoMessage()    {}
+func (*MsgDisableContractBlockExecutionResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5a8c9d0c2a02a50a, []int{3}
 }
-func (m *MsgDisableBlockExecutionResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgDisableContractBlockExecutionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgDisableBlockExecutionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDisableContractBlockExecutionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgDisableBlockExecutionResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDisableContractBlockExecutionResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -190,55 +197,107 @@ func (m *MsgDisableBlockExecutionResponse) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
-func (m *MsgDisableBlockExecutionResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgDisableBlockExecutionResponse.Merge(m, src)
+func (m *MsgDisableContractBlockExecutionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDisableContractBlockExecutionResponse.Merge(m, src)
 }
-func (m *MsgDisableBlockExecutionResponse) XXX_Size() int {
+func (m *MsgDisableContractBlockExecutionResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgDisableBlockExecutionResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgDisableBlockExecutionResponse.DiscardUnknown(m)
+func (m *MsgDisableContractBlockExecutionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDisableContractBlockExecutionResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgDisableBlockExecutionResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgDisableContractBlockExecutionResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterEnum("cosmwasmlifecycle.ExecutionType", ExecutionType_name, ExecutionType_value)
-	proto.RegisterType((*MsgEnableBlockExecution)(nil), "cosmwasmlifecycle.MsgEnableBlockExecution")
-	proto.RegisterType((*MsgEnableBlockExecutionResponse)(nil), "cosmwasmlifecycle.MsgEnableBlockExecutionResponse")
-	proto.RegisterType((*MsgDisableBlockExecution)(nil), "cosmwasmlifecycle.MsgDisableBlockExecution")
-	proto.RegisterType((*MsgDisableBlockExecutionResponse)(nil), "cosmwasmlifecycle.MsgDisableBlockExecutionResponse")
+	proto.RegisterType((*MsgEnableContractBlockExecution)(nil), "cosmwasmlifecycle.MsgEnableContractBlockExecution")
+	proto.RegisterType((*MsgEnableContractBlockExecutionResponse)(nil), "cosmwasmlifecycle.MsgEnableContractBlockExecutionResponse")
+	proto.RegisterType((*MsgDisableContractBlockExecution)(nil), "cosmwasmlifecycle.MsgDisableContractBlockExecution")
+	proto.RegisterType((*MsgDisableContractBlockExecutionResponse)(nil), "cosmwasmlifecycle.MsgDisableContractBlockExecutionResponse")
 }
 
 func init() { proto.RegisterFile("cosmwasmlifecycle/tx.proto", fileDescriptor_5a8c9d0c2a02a50a) }
 
 var fileDescriptor_5a8c9d0c2a02a50a = []byte{
-	// 389 bytes of a gzipped FileDescriptorProto
+	// 367 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4a, 0xce, 0x2f, 0xce,
 	0x2d, 0x4f, 0x2c, 0xce, 0xcd, 0xc9, 0x4c, 0x4b, 0x4d, 0xae, 0x4c, 0xce, 0x49, 0xd5, 0x2f, 0xa9,
 	0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0xc4, 0x90, 0x93, 0x12, 0x49, 0xcf, 0x4f, 0xcf,
 	0x07, 0xcb, 0xea, 0x83, 0x58, 0x10, 0x85, 0x52, 0x92, 0x20, 0x85, 0xf9, 0xc5, 0xf1, 0x10, 0x09,
-	0x08, 0x07, 0x22, 0xa5, 0xb4, 0x8e, 0x91, 0x4b, 0xdc, 0xb7, 0x38, 0xdd, 0x35, 0x2f, 0x31, 0x29,
-	0x27, 0xd5, 0x29, 0x27, 0x3f, 0x39, 0xdb, 0xb5, 0x22, 0x35, 0xb9, 0xb4, 0x24, 0x33, 0x3f, 0x4f,
-	0xc8, 0x99, 0x4b, 0x20, 0x39, 0x3f, 0xaf, 0xa4, 0x28, 0x31, 0xb9, 0x24, 0x3e, 0x31, 0x25, 0xa5,
-	0x28, 0xb5, 0xb8, 0x58, 0x82, 0x51, 0x81, 0x51, 0x83, 0xd3, 0x49, 0xe2, 0xd2, 0x16, 0x5d, 0x11,
-	0xa8, 0x39, 0x8e, 0x10, 0x99, 0xe0, 0x92, 0xa2, 0xcc, 0xbc, 0xf4, 0x20, 0x7e, 0x98, 0x0e, 0xa8,
-	0xb0, 0x90, 0x0b, 0x17, 0x67, 0x2a, 0xcc, 0x44, 0x09, 0x26, 0x05, 0x46, 0x0d, 0x3e, 0x23, 0x05,
-	0x3d, 0x0c, 0x87, 0xeb, 0xc1, 0x6d, 0x0d, 0xa9, 0x2c, 0x48, 0x75, 0x62, 0x39, 0x71, 0x4f, 0x9e,
-	0x31, 0x08, 0xa1, 0xd1, 0x8a, 0xa3, 0x63, 0x81, 0x3c, 0xc3, 0x8b, 0x05, 0xf2, 0x0c, 0x4a, 0x8a,
-	0x5c, 0xf2, 0x38, 0xdc, 0x1b, 0x94, 0x5a, 0x5c, 0x90, 0x9f, 0x57, 0x9c, 0xaa, 0xb4, 0x9e, 0x91,
-	0x4b, 0xc2, 0xb7, 0x38, 0xdd, 0x25, 0xb3, 0x78, 0xa8, 0x78, 0x4a, 0x89, 0x4b, 0x01, 0x97, 0x83,
-	0x61, 0xbe, 0xd2, 0xd2, 0xe7, 0xe2, 0x45, 0x31, 0x4f, 0x88, 0x9f, 0x8b, 0xdb, 0xc9, 0xd5, 0xdd,
-	0xd3, 0x2f, 0xde, 0xc9, 0xc7, 0xdf, 0xd9, 0x5b, 0x80, 0x41, 0x88, 0x97, 0x8b, 0xd3, 0xd5, 0xcf,
-	0x05, 0xca, 0x65, 0x34, 0xfa, 0xc1, 0xc8, 0xc5, 0xec, 0x5b, 0x9c, 0x2e, 0x54, 0xc6, 0x25, 0x82,
-	0x35, 0x7a, 0xb5, 0xb0, 0xb8, 0x18, 0x47, 0xd0, 0x4a, 0x19, 0x11, 0xaf, 0x16, 0xe6, 0x60, 0xa1,
-	0x4a, 0x2e, 0x51, 0xec, 0x51, 0xa0, 0x8d, 0xdd, 0x30, 0xac, 0x8a, 0xa5, 0x8c, 0x49, 0x50, 0x0c,
-	0xb3, 0xda, 0x29, 0xea, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4, 0x18, 0x1f, 0x3c, 0x92, 0x63,
-	0x9c, 0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f, 0xe5, 0x18, 0xa2, 0x1c, 0xd2,
-	0x33, 0x4b, 0x32, 0x4a, 0x93, 0xf4, 0x92, 0xf3, 0x73, 0xf5, 0x53, 0x73, 0x33, 0x53, 0x52, 0xcb,
-	0x2c, 0x2d, 0xf4, 0x61, 0x36, 0xe8, 0x22, 0x32, 0x59, 0x85, 0x3e, 0x96, 0x8c, 0x57, 0x59, 0x90,
-	0x5a, 0x9c, 0xc4, 0x06, 0xce, 0x38, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0xd0, 0xf8, 0x8a,
-	0x52, 0x9a, 0x03, 0x00, 0x00,
+	0x08, 0x07, 0x2a, 0xa5, 0x86, 0x69, 0x7e, 0x6a, 0x45, 0x6a, 0x72, 0x69, 0x49, 0x66, 0x7e, 0x5e,
+	0x7c, 0x49, 0x65, 0x41, 0x2a, 0x44, 0x9d, 0xd2, 0x06, 0x46, 0x2e, 0x79, 0xdf, 0xe2, 0x74, 0xd7,
+	0xbc, 0xc4, 0xa4, 0x9c, 0x54, 0xe7, 0xfc, 0xbc, 0x92, 0xa2, 0xc4, 0xe4, 0x12, 0xa7, 0x9c, 0xfc,
+	0xe4, 0x6c, 0x57, 0x98, 0x72, 0x21, 0x67, 0x2e, 0x81, 0x64, 0xa8, 0x4c, 0x7c, 0x62, 0x4a, 0x4a,
+	0x51, 0x6a, 0x71, 0xb1, 0x04, 0xa3, 0x02, 0xa3, 0x06, 0xa7, 0x93, 0xc4, 0xa5, 0x2d, 0xba, 0x22,
+	0x50, 0x7b, 0x1d, 0x21, 0x32, 0xc1, 0x25, 0x45, 0x99, 0x79, 0xe9, 0x41, 0xfc, 0x30, 0x1d, 0x50,
+	0x61, 0x21, 0x3b, 0x2e, 0x4e, 0xb8, 0x03, 0x24, 0x98, 0x14, 0x18, 0x35, 0xf8, 0x8c, 0x14, 0xf4,
+	0x30, 0x1c, 0xa9, 0x07, 0xb7, 0x35, 0xa4, 0xb2, 0x20, 0x35, 0x08, 0xa1, 0xc5, 0x8a, 0xa3, 0x63,
+	0x81, 0x3c, 0xe3, 0x8b, 0x05, 0xf2, 0x8c, 0x4a, 0x9a, 0x5c, 0xea, 0x04, 0x5c, 0x1c, 0x94, 0x5a,
+	0x5c, 0x90, 0x9f, 0x57, 0x9c, 0xaa, 0xb4, 0x91, 0x91, 0x4b, 0xc1, 0xb7, 0x38, 0xdd, 0x25, 0xb3,
+	0x78, 0xe8, 0x78, 0x4f, 0x8b, 0x4b, 0x83, 0x90, 0x93, 0x61, 0xfe, 0x33, 0x5a, 0xc5, 0xc4, 0xc5,
+	0xec, 0x5b, 0x9c, 0x2e, 0xd4, 0xc7, 0xc8, 0x25, 0x83, 0x37, 0x0a, 0x8d, 0xb0, 0xb8, 0x85, 0x40,
+	0x20, 0x4a, 0x59, 0x91, 0xae, 0x07, 0xe6, 0x30, 0xa1, 0x89, 0x8c, 0x5c, 0xb2, 0xf8, 0x43, 0xdd,
+	0x18, 0xbb, 0xe9, 0x78, 0x35, 0x49, 0x59, 0x93, 0xa1, 0x09, 0xe6, 0x26, 0xa7, 0xa8, 0x13, 0x8f,
+	0xe4, 0x18, 0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b,
+	0x8f, 0xe5, 0x18, 0x6e, 0x3c, 0x96, 0x63, 0x88, 0x72, 0x48, 0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0xd2,
+	0x4b, 0xce, 0xcf, 0xd5, 0x4f, 0xcd, 0xcd, 0x4c, 0x49, 0x2d, 0xb3, 0xb4, 0xd0, 0x87, 0xd9, 0xa4,
+	0x8b, 0xc8, 0x41, 0x15, 0xfa, 0x58, 0x72, 0x6d, 0x65, 0x41, 0x6a, 0x71, 0x12, 0x1b, 0x38, 0x37,
+	0x19, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x98, 0x98, 0x96, 0xd8, 0xd7, 0x03, 0x00, 0x00,
+}
+
+func (this *MsgEnableContractBlockExecution) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgEnableContractBlockExecution)
+	if !ok {
+		that2, ok := that.(MsgEnableContractBlockExecution)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.ContractAddress != that1.ContractAddress {
+		return false
+	}
+	if this.Execution != that1.Execution {
+		return false
+	}
+	return true
+}
+func (this *MsgDisableContractBlockExecution) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgDisableContractBlockExecution)
+	if !ok {
+		that2, ok := that.(MsgDisableContractBlockExecution)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.ContractAddress != that1.ContractAddress {
+		return false
+	}
+	if this.Execution != that1.Execution {
+		return false
+	}
+	return true
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -253,8 +312,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	EnableBlockExecution(ctx context.Context, in *MsgEnableBlockExecution, opts ...grpc.CallOption) (*MsgEnableBlockExecutionResponse, error)
-	DisableBlockExecution(ctx context.Context, in *MsgDisableBlockExecution, opts ...grpc.CallOption) (*MsgDisableBlockExecutionResponse, error)
+	EnableContractBlockExecution(ctx context.Context, in *MsgEnableContractBlockExecution, opts ...grpc.CallOption) (*MsgEnableContractBlockExecutionResponse, error)
+	DisableContractBlockExecution(ctx context.Context, in *MsgDisableContractBlockExecution, opts ...grpc.CallOption) (*MsgDisableContractBlockExecutionResponse, error)
 }
 
 type msgClient struct {
@@ -265,18 +324,18 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) EnableBlockExecution(ctx context.Context, in *MsgEnableBlockExecution, opts ...grpc.CallOption) (*MsgEnableBlockExecutionResponse, error) {
-	out := new(MsgEnableBlockExecutionResponse)
-	err := c.cc.Invoke(ctx, "/cosmwasmlifecycle.Msg/EnableBlockExecution", in, out, opts...)
+func (c *msgClient) EnableContractBlockExecution(ctx context.Context, in *MsgEnableContractBlockExecution, opts ...grpc.CallOption) (*MsgEnableContractBlockExecutionResponse, error) {
+	out := new(MsgEnableContractBlockExecutionResponse)
+	err := c.cc.Invoke(ctx, "/cosmwasmlifecycle.Msg/EnableContractBlockExecution", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) DisableBlockExecution(ctx context.Context, in *MsgDisableBlockExecution, opts ...grpc.CallOption) (*MsgDisableBlockExecutionResponse, error) {
-	out := new(MsgDisableBlockExecutionResponse)
-	err := c.cc.Invoke(ctx, "/cosmwasmlifecycle.Msg/DisableBlockExecution", in, out, opts...)
+func (c *msgClient) DisableContractBlockExecution(ctx context.Context, in *MsgDisableContractBlockExecution, opts ...grpc.CallOption) (*MsgDisableContractBlockExecutionResponse, error) {
+	out := new(MsgDisableContractBlockExecutionResponse)
+	err := c.cc.Invoke(ctx, "/cosmwasmlifecycle.Msg/DisableContractBlockExecution", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -285,57 +344,57 @@ func (c *msgClient) DisableBlockExecution(ctx context.Context, in *MsgDisableBlo
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	EnableBlockExecution(context.Context, *MsgEnableBlockExecution) (*MsgEnableBlockExecutionResponse, error)
-	DisableBlockExecution(context.Context, *MsgDisableBlockExecution) (*MsgDisableBlockExecutionResponse, error)
+	EnableContractBlockExecution(context.Context, *MsgEnableContractBlockExecution) (*MsgEnableContractBlockExecutionResponse, error)
+	DisableContractBlockExecution(context.Context, *MsgDisableContractBlockExecution) (*MsgDisableContractBlockExecutionResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) EnableBlockExecution(ctx context.Context, req *MsgEnableBlockExecution) (*MsgEnableBlockExecutionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EnableBlockExecution not implemented")
+func (*UnimplementedMsgServer) EnableContractBlockExecution(ctx context.Context, req *MsgEnableContractBlockExecution) (*MsgEnableContractBlockExecutionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnableContractBlockExecution not implemented")
 }
-func (*UnimplementedMsgServer) DisableBlockExecution(ctx context.Context, req *MsgDisableBlockExecution) (*MsgDisableBlockExecutionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DisableBlockExecution not implemented")
+func (*UnimplementedMsgServer) DisableContractBlockExecution(ctx context.Context, req *MsgDisableContractBlockExecution) (*MsgDisableContractBlockExecutionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DisableContractBlockExecution not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_EnableBlockExecution_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgEnableBlockExecution)
+func _Msg_EnableContractBlockExecution_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgEnableContractBlockExecution)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).EnableBlockExecution(ctx, in)
+		return srv.(MsgServer).EnableContractBlockExecution(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cosmwasmlifecycle.Msg/EnableBlockExecution",
+		FullMethod: "/cosmwasmlifecycle.Msg/EnableContractBlockExecution",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).EnableBlockExecution(ctx, req.(*MsgEnableBlockExecution))
+		return srv.(MsgServer).EnableContractBlockExecution(ctx, req.(*MsgEnableContractBlockExecution))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_DisableBlockExecution_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgDisableBlockExecution)
+func _Msg_DisableContractBlockExecution_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDisableContractBlockExecution)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).DisableBlockExecution(ctx, in)
+		return srv.(MsgServer).DisableContractBlockExecution(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cosmwasmlifecycle.Msg/DisableBlockExecution",
+		FullMethod: "/cosmwasmlifecycle.Msg/DisableContractBlockExecution",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).DisableBlockExecution(ctx, req.(*MsgDisableBlockExecution))
+		return srv.(MsgServer).DisableContractBlockExecution(ctx, req.(*MsgDisableContractBlockExecution))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -345,19 +404,19 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "EnableBlockExecution",
-			Handler:    _Msg_EnableBlockExecution_Handler,
+			MethodName: "EnableContractBlockExecution",
+			Handler:    _Msg_EnableContractBlockExecution_Handler,
 		},
 		{
-			MethodName: "DisableBlockExecution",
-			Handler:    _Msg_DisableBlockExecution_Handler,
+			MethodName: "DisableContractBlockExecution",
+			Handler:    _Msg_DisableContractBlockExecution_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "cosmwasmlifecycle/tx.proto",
 }
 
-func (m *MsgEnableBlockExecution) Marshal() (dAtA []byte, err error) {
+func (m *MsgEnableContractBlockExecution) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -367,12 +426,12 @@ func (m *MsgEnableBlockExecution) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgEnableBlockExecution) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgEnableContractBlockExecution) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgEnableBlockExecution) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgEnableContractBlockExecution) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -392,7 +451,7 @@ func (m *MsgEnableBlockExecution) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgEnableBlockExecutionResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgEnableContractBlockExecutionResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -402,12 +461,12 @@ func (m *MsgEnableBlockExecutionResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgEnableBlockExecutionResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgEnableContractBlockExecutionResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgEnableBlockExecutionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgEnableContractBlockExecutionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -415,7 +474,7 @@ func (m *MsgEnableBlockExecutionResponse) MarshalToSizedBuffer(dAtA []byte) (int
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgDisableBlockExecution) Marshal() (dAtA []byte, err error) {
+func (m *MsgDisableContractBlockExecution) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -425,12 +484,12 @@ func (m *MsgDisableBlockExecution) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgDisableBlockExecution) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDisableContractBlockExecution) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgDisableBlockExecution) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDisableContractBlockExecution) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -450,7 +509,7 @@ func (m *MsgDisableBlockExecution) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgDisableBlockExecutionResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgDisableContractBlockExecutionResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -460,12 +519,12 @@ func (m *MsgDisableBlockExecutionResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgDisableBlockExecutionResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDisableContractBlockExecutionResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgDisableBlockExecutionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDisableContractBlockExecutionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -484,7 +543,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgEnableBlockExecution) Size() (n int) {
+func (m *MsgEnableContractBlockExecution) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -500,7 +559,7 @@ func (m *MsgEnableBlockExecution) Size() (n int) {
 	return n
 }
 
-func (m *MsgEnableBlockExecutionResponse) Size() (n int) {
+func (m *MsgEnableContractBlockExecutionResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -509,7 +568,7 @@ func (m *MsgEnableBlockExecutionResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgDisableBlockExecution) Size() (n int) {
+func (m *MsgDisableContractBlockExecution) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -525,7 +584,7 @@ func (m *MsgDisableBlockExecution) Size() (n int) {
 	return n
 }
 
-func (m *MsgDisableBlockExecutionResponse) Size() (n int) {
+func (m *MsgDisableContractBlockExecutionResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -540,7 +599,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgEnableBlockExecution) Unmarshal(dAtA []byte) error {
+func (m *MsgEnableContractBlockExecution) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -563,10 +622,10 @@ func (m *MsgEnableBlockExecution) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgEnableBlockExecution: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgEnableContractBlockExecution: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgEnableBlockExecution: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgEnableContractBlockExecution: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -641,7 +700,7 @@ func (m *MsgEnableBlockExecution) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgEnableBlockExecutionResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgEnableContractBlockExecutionResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -664,10 +723,10 @@ func (m *MsgEnableBlockExecutionResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgEnableBlockExecutionResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgEnableContractBlockExecutionResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgEnableBlockExecutionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgEnableContractBlockExecutionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -691,7 +750,7 @@ func (m *MsgEnableBlockExecutionResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgDisableBlockExecution) Unmarshal(dAtA []byte) error {
+func (m *MsgDisableContractBlockExecution) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -714,10 +773,10 @@ func (m *MsgDisableBlockExecution) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgDisableBlockExecution: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDisableContractBlockExecution: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgDisableBlockExecution: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDisableContractBlockExecution: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -792,7 +851,7 @@ func (m *MsgDisableBlockExecution) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgDisableBlockExecutionResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgDisableContractBlockExecutionResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -815,10 +874,10 @@ func (m *MsgDisableBlockExecutionResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgDisableBlockExecutionResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDisableContractBlockExecutionResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgDisableBlockExecutionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDisableContractBlockExecutionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
