@@ -8,6 +8,8 @@ import "cosmwasmlifecycle/params.proto";
 
 option go_package = "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types";
 
+
+// TODO: add remaining module query RPC methods
 // Query defines the gRPC querier service.
 service Query {
   // Parameters queries the parameters of the module.

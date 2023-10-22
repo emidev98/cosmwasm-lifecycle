@@ -1,5 +1,15 @@
 package types
 
+import sdk "github.com/cosmos/cosmos-sdk/types"
+
+func NewCleanContract(executionType ExecutionType, deposit sdk.Coin) Contract {
+	return Contract{
+		Strikes:       0,
+		ExecutionType: executionType,
+		Deposit:       deposit,
+	}
+}
+
 // Can Execute returns true if the contract can be executed
 // based on the module parameters, strikes and available deposits
 func (c *Contract) CanExecute(p Params, executionType ExecutionType) bool {

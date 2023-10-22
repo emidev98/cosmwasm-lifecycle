@@ -12,10 +12,11 @@ import (
 )
 
 type Keeper struct {
-	cdc        codec.BinaryCodec
-	storeKey   storetypes.StoreKey
-	wasmKeeper types.WasmKeeper
-	bankKeeper types.BankKeeper
+	cdc           codec.BinaryCodec
+	storeKey      storetypes.StoreKey
+	wasmKeeper    types.WasmKeeper
+	bankKeeper    types.BankKeeper
+	authorityAddr string
 }
 
 func NewKeeper(
@@ -23,13 +24,15 @@ func NewKeeper(
 	storeKey storetypes.StoreKey,
 	wasmKeeper types.WasmKeeper,
 	bankKeeper types.BankKeeper,
+	authorityAddr string,
 ) *Keeper {
 
 	return &Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-		wasmKeeper: wasmKeeper,
-		bankKeeper: bankKeeper,
+		cdc:           cdc,
+		storeKey:      storeKey,
+		wasmKeeper:    wasmKeeper,
+		bankKeeper:    bankKeeper,
+		authorityAddr: authorityAddr,
 	}
 }
 
@@ -128,4 +131,8 @@ func (k Keeper) deleteContractAndBurnDeposit(ctx sdk.Context, contractAddr sdk.A
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+}
+
+func (k Keeper) GetAuthority() string {
+	return k.authorityAddr
 }

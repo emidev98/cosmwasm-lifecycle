@@ -560,6 +560,7 @@ func New(
 		keys[cosmwasmlifecyclemoduletypes.StoreKey],
 		app.WasmKeeper,
 		app.BankKeeper,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 	cosmwasmlifecycleModule := cosmwasmlifecyclemodule.NewAppModule(appCodec, app.CosmwasmlifecycleKeeper, app.WasmKeeper)
 

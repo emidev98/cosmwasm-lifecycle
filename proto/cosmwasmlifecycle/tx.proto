@@ -1,31 +1,107 @@
 syntax = "proto3";
 package cosmwasmlifecycle;
-import "gogoproto/gogo.proto";
+
+import "cosmos/base/v1beta1/coin.proto";
+import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "cosmwasmlifecycle/execution_type.proto";
+import "cosmwasmlifecycle/params.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc EnableContractBlockExecution(MsgEnableContractBlockExecution) returns (MsgEnableContractBlockExecutionResponse);
-  rpc DisableContractBlockExecution(MsgDisableContractBlockExecution) returns (MsgDisableContractBlockExecutionResponse);
+  // Allow anyone to deposit funds for a smart contract to be executed
+  // at begin and end block. This is useful when the parameters are updated.
+  // and a contract will not have enough funds to execute.
+  rpc FundExistentContract(MsgFundExistentContract) returns (MsgFundExistentContractResponse);
+
+  // Update module parameters allowed only thought governance.
+  rpc UpdateParams(MsgUpdateParamsProposal) returns (MsgUpdateParamsProposalResponse);
+
+  // Enable a contract execution at begin or end block
+  // with allowed only thoguht governance.
+  rpc EnableContractExecution(MsgEnableContractExecutionProposal) returns (MsgEnableContractExecutionProposalResponse);
+
+  // Disable a contract execution thoguht governance
+  // and send the collateral back to the specified address.
+  rpc DisableContractExecution(MsgDisableContractExecutionProposal) returns (MsgDisableContractExecutionProposalResponse);
 }
 
-message MsgEnableContractBlockExecution {
+// Anyone can send funds to allow a contract to be  executed at begin 
+// or end block this funds will be in custody of the module address 
+// and  will be returned to the specified address when the contract is 
+// disabled by governance. If the contract reaches the maximum number 
+// of strikes this funds will be burn.
+message MsgFundExistentContract {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters) = true;
+  option (cosmos.msg.v1.signer) = "sender";
+
+  
+  string sender = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // Address of the contract to fund.
+  string contract_addr = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  // Collateral deposited to the contract.
+  cosmos.base.v1beta1.Coin deposit = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin"
+  ];
+}
+message MsgFundExistentContractResponse {}
+
+// Authority message to update the module parameters allowed only thought governance.
+message MsgUpdateParamsProposal {
+  option (cosmos.msg.v1.signer) = "authority";
+  // the title of the update proposal
+  string title = 1;
+  // the description of the proposal
+  string description = 2;
+  string authority = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  Params params = 4 [(gogoproto.nullable) = false];
+}
+
+message MsgUpdateParamsProposalResponse {}
+
+// Authority message to enable a contract execution at begin or end block. 
+// If the specified contract is already enabled at begin or end block 
+// this message will check the ExecutionType of the contract and compares
+// it with the one submitted in the message **if this aren't the same type**
+// will enable that specific ExecutionType.
+message MsgEnableContractExecutionProposal {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters) = true;
+  // the title of the update proposal
+  string title = 1;
+  // the description of the proposal
+  string description = 2;
+
+  string authority = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  cosmos.base.v1beta1.Coin contract_deposit = 4 [
+    (gogoproto.nullable) = false,
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin"
+  ];
+  string contract_addr = 5 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  ExecutionType execution = 6;
+}
+message MsgEnableContractExecutionProposalResponse {}
+
+// Authority message to disable a contract execution at begin, end or both block.
+// This message will send the collateral back to the specified address
+message MsgDisableContractExecutionProposal {
+  option (cosmos.msg.v1.signer) = "authority";
   option (gogoproto.equal) = true;
   option (gogoproto.goproto_getters) = true;
 
-  string contract_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  ExecutionType execution = 2;
+  // the title of the update proposal
+  string title = 1;
+  // the description of the proposal
+  string description = 2;
+  string authority = 3 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string contract_addr = 4 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  ExecutionType execution = 5;
+  string deposit_refund_account = 6 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
-message MsgEnableContractBlockExecutionResponse {}
-
-message MsgDisableContractBlockExecution {
-  option (gogoproto.equal) = true;
-  option (gogoproto.goproto_getters) = true;
-
-  string contract_address = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  ExecutionType execution = 2;
-}
-message MsgDisableContractBlockExecutionResponse {}
+message MsgDisableContractExecutionProposalResponse {}

@@ -20,6 +20,8 @@ const (
 	listSeparator              = ","
 )
 
+// TODO: add remaining module msgs
+
 // GetTxCmd returns the transaction commands for this module
 func GetTxCmd() *cobra.Command {
 	cmd := &cobra.Command{

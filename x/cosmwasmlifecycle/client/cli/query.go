@@ -13,6 +13,7 @@ import (
 	"github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types"
 )
 
+// TODO: add remaining module queries
 // GetQueryCmd returns the cli query commands for this module
 func GetQueryCmd(queryRoute string) *cobra.Command {
 	// Group cosmwasmlifecycle queries under a subcommand
