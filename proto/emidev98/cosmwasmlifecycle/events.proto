@@ -1,5 +1,5 @@
 syntax = "proto3";
-package cosmwasmlifecycle;
+package emidev98.cosmwasmlifecycle;
 
 import "cosmos_proto/cosmos.proto";
 option go_package = "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types";

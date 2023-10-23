@@ -1,10 +1,10 @@
 syntax = "proto3";
-package cosmwasmlifecycle;
+package emidev98.cosmwasmlifecycle;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "cosmwasmlifecycle/params.proto";
+import "emidev98/cosmwasmlifecycle/params.proto";
 
 option go_package = "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types";
 

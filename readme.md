@@ -9,14 +9,16 @@ CosmWasm Lifecycle blockchain module leverages [CosmoSDK's lifecycle](https://do
 
 ### Usecases
 
-Automatic execution of smart contracts is very useful because enable multiple usecases that involves consensus models like oracle data voting, automatic LP rebalancing, automatic disputes, automatic rewards claiming, restaking... 
+Automatic execution of smart contracts is very useful because enable multiple usecases that can laverage consensus to do oracle data voting, automatic LP rebalancing, automatic disputes, automatic rewards claiming, restaking... 
 
 ### Drawbacks
 
-But automatic smart contract executions in consensus is a double edge sword because too many smart contract executions or too many operations in the smart contracts can slowdown the block production. 
+Automatic smart contract executions in consensus is a double edge sword because too many smart contract executions or too many operations in the smart contracts can slowdown the block production significantly. 
 
 ### Solution to the drawbacks
 
-This module addresses the earlier issue by empowering the chain's governance to collectively vote on enabling each smart contract's automatic execution.
+This module addresses the earlier issue by empowering the `chain's governance` to collectively vote on enabling each smart contract's automatic execution.
 
-Additionally, a secondary measure is implemented, requiring a collateral deposit for each smart contract if it wants to be executed. This deposit will be burned if the smart contract fails the execution multiple times
+Additionally, a secondary measure is implemented, `requiring a collateral deposit` for each smart contract if it wants to be executed. This deposit will be burned if the smart contract fails the execution multiple times
+
+A third measure to the previously mentioned problem, is to allow smart contracts execution each `n number of blocks`. Which means that execution at end and begin block decreases computation necessity because it does not have to load all the wasm environment and try an execution.

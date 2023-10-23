@@ -18,8 +18,11 @@ var (
 	ErrorInvalidSigner                             = sdkerrors.Register(ModuleName, 50006, "invalid message signer")
 
 	// Msg Server Errors
-	ErrorInvalidAuthority            = sdkerrors.Register(ModuleName, 60000, "invalid authority on message execution")
-	ErrorExecutionTypeAlreadyExists  = sdkerrors.Register(ModuleName, 60001, "execution type already exists")
-	ErrorContractNotFoundWithAddress = sdkerrors.Register(ModuleName, 60002, "contract not found with specified address")
-	ErrorInvalidDenom                = sdkerrors.Register(ModuleName, 60003, "denom invalid denom specified")
+	ErrorInvalidAuthority                   = sdkerrors.Register(ModuleName, 60000, "invalid authority on message execution")
+	ErrorExecutionTypeAlreadyExists         = sdkerrors.Register(ModuleName, 60001, "execution type already exists")
+	ErrorContractNotFoundWithAddress        = sdkerrors.Register(ModuleName, 60002, "contract not found with specified address")
+	ErrorContractAlreadyExists              = sdkerrors.Register(ModuleName, 60003, "contract with specified number already exists")
+	ErrorInvalidDenom                       = sdkerrors.Register(ModuleName, 60004, "denom invalid denom specified")
+	ErrorContractAlreadyEnabled             = sdkerrors.Register(ModuleName, 60005, "contract already enabled with the specified execution type")
+	ErrorCannotDisableAllContractExecutions = sdkerrors.Register(ModuleName, 60006, "cannot disable all contract execution, please remove it instead")
 )

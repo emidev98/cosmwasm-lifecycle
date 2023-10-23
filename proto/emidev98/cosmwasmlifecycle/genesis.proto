@@ -1,10 +1,10 @@
 syntax = "proto3";
-package cosmwasmlifecycle;
+package emidev98.cosmwasmlifecycle;
 
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
-import "cosmwasmlifecycle/params.proto";
-import "cosmwasmlifecycle/contract.proto";
+import "emidev98/cosmwasmlifecycle/params.proto";
+import "emidev98/cosmwasmlifecycle/contract.proto";
 
 option go_package = "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types";
 

@@ -32,34 +32,76 @@ func (s msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParamsP
 }
 
 // Enable a contract execution, only the module authority can do this.
-func (s msgServer) EnableContractExecution(ctx context.Context, msg *types.MsgEnableContractExecutionProposal) (res *types.MsgEnableContractExecutionProposalResponse, err error) {
+func (s msgServer) RegisterContract(ctx context.Context, msg *types.MsgRegisterContractProposal) (res *types.MsgRegisterContractProposalResponse, err error) {
 	if s.GetAuthority() != msg.Authority {
 		return nil, types.ErrorInvalidAuthority
 	}
+
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	_, found := s.Keeper.GetContract(sdkCtx, sdk.MustAccAddressFromBech32(msg.GetContractAddr()))
+	if found {
+		return nil, types.ErrorContractAlreadyExists
+	}
+
+	contract := types.NewCleanContract(msg.GetExecutionType(), msg.GetExecutionBlocksFrequency(), msg.ContractDeposit)
+	// store contract
+	s.Keeper.SetContract(sdkCtx,
+		sdk.AccAddress(msg.GetContractAddr()),
+		contract,
+	)
+	// TODO: emit contract enabled event
+	return res, err
+}
+
+// Modify a registered contract execution, only the module authority can do this.
+func (s msgServer) ModifyContract(ctx context.Context, msg *types.MsgModifyContractProposal) (res *types.MsgModifyContractProposalResponse, err error) {
+	if s.GetAuthority() != msg.Authority {
+		return nil, types.ErrorInvalidAuthority
+	}
+
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	contract, found := s.Keeper.GetContract(sdkCtx, sdk.MustAccAddressFromBech32(msg.GetContractAddr()))
-
 	if !found {
-		s.Keeper.SetContract(sdkCtx,
-			sdk.AccAddress(msg.GetContractAddr()),
-			types.NewCleanContract(msg.GetExecution(), msg.ContractDeposit),
-		)
-	} else {
-		if contract.ExecutionType == msg.GetExecution() {
-			return nil, types.ErrorExecutionTypeAlreadyExists
+		return nil, types.ErrorContractNotFoundWithAddress
+	}
+
+	// When enabling a smart contract execution type must not be
+	// already enabled with the same execution type otherwise
+	// return an error.
+	if msg.GetOperation() == types.ExecutionTypeOperation_ENABLE {
+		if contract.GetExecutionType() == types.ExecutionType_BEGIN_AND_END_BLOCK {
+			return nil, types.ErrorContractAlreadyEnabled
+		} else if contract.GetExecutionType() == msg.GetExecutionType() {
+			return nil, types.ErrorContractAlreadyEnabled
 		}
 		contract.ExecutionType = types.ExecutionType_BEGIN_AND_END_BLOCK
-		s.Keeper.SetContract(sdkCtx,
-			sdk.MustAccAddressFromBech32(msg.GetContractAddr()),
-			contract,
-		)
+	} else {
+
+		// When disabling a smart contract execution cannot disable both
+		// execution types, otherwise return an error.
+		if contract.GetExecutionType() == msg.GetExecutionType() ||
+			contract.GetExecutionType() == types.ExecutionType_BEGIN_AND_END_BLOCK {
+			return nil, types.ErrorCannotDisableAllContractExecutions
+		}
+
+		// Based on the current execution type, set the new execution type.
+		if msg.GetExecutionType() == types.ExecutionType_BEGIN_BLOCK {
+			contract.ExecutionType = types.ExecutionType_END_BLOCK
+		} else {
+			contract.ExecutionType = types.ExecutionType_BEGIN_BLOCK
+		}
 	}
+	// Override the execution frequency
+	contract.ExecutionFrequency = msg.GetExecutionBlocksFrequency()
+	// store contract
+	s.Keeper.SetContract(sdkCtx, sdk.MustAccAddressFromBech32(msg.GetContractAddr()), contract)
+	// TODO: emit contract modify event
 
 	return res, err
 }
 
-// Disable a contract execution and return the funds to the external account, only the module authority can do this.
-func (s msgServer) DisableContractExecution(ctx context.Context, msg *types.MsgDisableContractExecutionProposal) (res *types.MsgDisableContractExecutionProposalResponse, err error) {
+// Remove a registered contract execution and return the deposit to the refund account.
+func (s msgServer) RemoveContract(ctx context.Context, msg *types.MsgRemoveContractProposal) (res *types.MsgRemoveContractProposalResponse, err error) {
 	if s.GetAuthority() != msg.Authority {
 		return nil, types.ErrorInvalidAuthority
 	}
@@ -80,7 +122,7 @@ func (s msgServer) DisableContractExecution(ctx context.Context, msg *types.MsgD
 	if err != nil {
 		return nil, err
 	}
-
+	// TODO: emit contract removed event
 	return res, err
 }
 
@@ -96,6 +138,7 @@ func (s msgServer) FundExistentContract(ctx context.Context, msg *types.MsgFundE
 		return nil, types.ErrorInvalidDenom
 	}
 	contract.Deposit = contract.Deposit.Add(msg.Deposit)
+	// store contract
 	s.Keeper.SetContract(sdkCtx, sdk.MustAccAddressFromBech32(msg.GetContractAddr()), contract)
 
 	return res, err

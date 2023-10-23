@@ -34923,10 +34923,10 @@ paths:
           format: int64
       tags:
         - Query
-  /emidev98/cosmwasm-lifecycle/cosmwasmlifecycle/params:
+  /cosmwasmlifecycle/params:
     get:
       summary: Parameters queries the parameters of the module.
-      operationId: CosmwasmlifecycleCosmwasmlifecycleParams
+      operationId: Emidev98CosmwasmlifecycleParams
       responses:
         '200':
           description: A successful response.
@@ -34936,6 +34936,32 @@ paths:
               params:
                 description: params holds all the parameters of this module.
                 type: object
+                properties:
+                  is_enabled:
+                    type: boolean
+                    title: |-
+                      Enable or disable executions
+                      at the begin and end of the block
+                  min_deposit:
+                    description: >-
+                      Minimum deposit to enable contract execution at begin
+                      block and/or end block
+
+                      This deposit will be burned if the contract execution
+                      reaches the max strikes.
+                    type: object
+                    properties:
+                      denom:
+                        type: string
+                      amount:
+                        type: string
+                  strikes_to_disable_execution:
+                    type: string
+                    format: int64
+                    description: |-
+                      Amount of strikes that the contract can hold before being 
+                      disabled from end and beging block executions.
+                       When this happens the min_desposit will also be burned.
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -70567,15 +70593,90 @@ definitions:
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
     description: Period defines a length of time and amount of coins that will vest.
-  cosmwasmlifecycle.cosmwasmlifecycle.Params:
+  emidev98.cosmwasmlifecycle.ExecutionType:
+    type: string
+    enum:
+      - BEGIN_BLOCK
+      - END_BLOCK
+      - BEGIN_AND_END_BLOCK
+    default: BEGIN_BLOCK
+  emidev98.cosmwasmlifecycle.ExecutionTypeOperation:
+    type: string
+    enum:
+      - ENABLE
+      - DISABLE
+    default: ENABLE
+  emidev98.cosmwasmlifecycle.MsgFundExistentContractResponse:
     type: object
+  emidev98.cosmwasmlifecycle.MsgModifyContractProposalResponse:
+    type: object
+  emidev98.cosmwasmlifecycle.MsgRegisterContractProposalResponse:
+    type: object
+  emidev98.cosmwasmlifecycle.MsgRemoveContractProposalResponse:
+    type: object
+  emidev98.cosmwasmlifecycle.MsgUpdateParamsProposalResponse:
+    type: object
+  emidev98.cosmwasmlifecycle.Params:
+    type: object
+    properties:
+      is_enabled:
+        type: boolean
+        title: |-
+          Enable or disable executions
+          at the begin and end of the block
+      min_deposit:
+        description: >-
+          Minimum deposit to enable contract execution at begin block and/or end
+          block
+
+          This deposit will be burned if the contract execution reaches the max
+          strikes.
+        type: object
+        properties:
+          denom:
+            type: string
+          amount:
+            type: string
+      strikes_to_disable_execution:
+        type: string
+        format: int64
+        description: |-
+          Amount of strikes that the contract can hold before being 
+          disabled from end and beging block executions.
+           When this happens the min_desposit will also be burned.
     description: Params defines the parameters for the module.
-  cosmwasmlifecycle.cosmwasmlifecycle.QueryParamsResponse:
+  emidev98.cosmwasmlifecycle.QueryParamsResponse:
     type: object
     properties:
       params:
         description: params holds all the parameters of this module.
         type: object
+        properties:
+          is_enabled:
+            type: boolean
+            title: |-
+              Enable or disable executions
+              at the begin and end of the block
+          min_deposit:
+            description: >-
+              Minimum deposit to enable contract execution at begin block and/or
+              end block
+
+              This deposit will be burned if the contract execution reaches the
+              max strikes.
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+          strikes_to_disable_execution:
+            type: string
+            format: int64
+            description: |-
+              Amount of strikes that the contract can hold before being 
+              disabled from end and beging block executions.
+               When this happens the min_desposit will also be burned.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccountResponse:
     type: object

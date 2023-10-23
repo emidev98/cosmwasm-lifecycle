@@ -37,13 +37,13 @@ func NewKeeper(
 }
 
 // Function used to execute the begin_block as sudo of a contract
-func (k Keeper) BeginBlock(ctx sdk.Context) (err error) {
+func (k Keeper) BeginBlock(ctx sdk.Context, currentBlockHeight int64) (err error) {
 	// First gets the module params and check if the module is enabled
 	params := k.GetParams(ctx)
 	if params.IsEnabled {
 		// Iterate over all contracts and check if the contract can be executed in the current context
 		err = k.IterateContracts(ctx, func(contractAddr sdk.AccAddress, contract types.Contract) error {
-			return k.executeContract(ctx, contractAddr, contract, params, types.ExecutionType_BEGIN_BLOCK)
+			return k.executeContract(ctx, contractAddr, contract, params, currentBlockHeight, types.ExecutionType_BEGIN_BLOCK)
 		})
 
 		if err != nil {
@@ -54,13 +54,13 @@ func (k Keeper) BeginBlock(ctx sdk.Context) (err error) {
 	return nil
 }
 
-func (k Keeper) EndBlock(ctx sdk.Context) (err error) {
+func (k Keeper) EndBlock(ctx sdk.Context, currentBlockHeight int64) (err error) {
 	// First gets the module params and check if the module is enabled
 	params := k.GetParams(ctx)
 	if params.IsEnabled {
 		// Iterate over all contracts and check if the contract can be executed in the current context
 		err = k.IterateContracts(ctx, func(contractAddr sdk.AccAddress, contract types.Contract) error {
-			return k.executeContract(ctx, contractAddr, contract, params, types.ExecutionType_END_BLOCK)
+			return k.executeContract(ctx, contractAddr, contract, params, currentBlockHeight, types.ExecutionType_END_BLOCK)
 		})
 
 		if err != nil {
@@ -77,36 +77,50 @@ func (k Keeper) executeContract(
 	contractAddr sdk.AccAddress,
 	contract types.Contract,
 	params types.Params,
-	executionType types.ExecutionType,
+	currentBlockHeight int64,
+	currentLifecycle types.ExecutionType,
 ) error {
-	if contract.CanExecute(params, executionType) {
-		// Execute the begin_block as sudo and if this execution fails,
+	// If the contract has enough strikes it will be removed
+	// and the contract deposit will be burned
+	if contract.HaveMaxStrikesToPenalize(params.StrikesToDisableExecution) {
+		return k.deleteContractAndBurnDeposit(ctx, contractAddr, contract.Deposit)
+	}
+
+	// If the contract does not match min deposit, it will not be executed
+	if contract.HaveLessThanMinDeposit(params.MinDeposit) {
+		return nil
+	}
+
+	if contract.CanExecute(currentBlockHeight, currentLifecycle) {
+		// Knowing that the contract can be executed
+		// the correct method is defined to be executed
+		// based on the current execution type
+		msgExecute := []byte("{\"sudo_begin_block\": {}}")
+		if currentLifecycle == types.ExecutionType_END_BLOCK {
+			msgExecute = []byte("{\"sudo_end_block\": {}}")
+		}
+		// Execute the contract method as sudo and if this execution fails,
 		// increment the strikes of the contract and emit the ContractStrikeEvent
-		_, err := k.wasmKeeper.Sudo(ctx, contractAddr, []byte("{\"begin_block\": {}}"))
+		_, err := k.wasmKeeper.Sudo(ctx, contractAddr, msgExecute)
 		if err != nil {
 			contract.Strikes++
-			err := EmitContractStrikeEvent(ctx, contractAddr, contract.Strikes, err)
-			if err != nil {
-				panic(err)
+
+			// Emit a contract strike event
+			if err := EmitContractStrikeEvent(ctx, contractAddr, contract.Strikes, err); err != nil {
+				return err
 			}
 
-			// If the contract has enough strikes to be disabled,
-			// it will be deleted form the store and the deposit
-			// will be burned
-			if contract.HasEnoughStrikesToDisableExecution(params.StrikesToDisableExecution) {
-				err := k.deleteContractAndBurnDeposit(ctx, contractAddr, contract.Deposit)
-				if err != nil {
+			// If the contract has enough strikes it will be removed
+			// and the contract deposit will be burned
+			if contract.HaveMaxStrikesToPenalize(params.StrikesToDisableExecution) {
+
+				if err := k.deleteContractAndBurnDeposit(ctx, contractAddr, contract.Deposit); err != nil {
 					return err
 				}
-			} else {
-				k.SetContract(ctx, contractAddr, contract)
 			}
 		}
-	} else {
-		err := k.deleteContractAndBurnDeposit(ctx, contractAddr, contract.Deposit)
-		if err != nil {
-			return err
-		}
+		contract.LatestBlockExecution = currentBlockHeight
+		k.SetContract(ctx, contractAddr, contract)
 	}
 
 	return nil

@@ -6,21 +6,24 @@ import (
 )
 
 const (
-	UpdateParamsProposalType             = "wasm_lifecycle_update_params_proposal_type"
-	EnableContractExecutionProposalType  = "wasm_lifecycle_enable_contract_execution_proposal_type"
-	DisableContractExecutionProposalType = "wasm_lifecycle_disable_contract_execution_proposal_type"
+	UpdateParamsProposalType     = "wasm_lifecycle_update_params"
+	RegisterContractProposalType = "wasm_lifecycle_register_contract"
+	ModifyContractProposalType   = "wasm_lifecycle_modify_contract"
+	RemoveContractProposalType   = "wasm_lifecycle_remove_contract"
 )
 
 var (
 	_ govtypes.Content = &MsgUpdateParamsProposal{}
-	_ govtypes.Content = &MsgEnableContractExecutionProposal{}
-	_ govtypes.Content = &MsgDisableContractExecutionProposal{}
+	_ govtypes.Content = &MsgRegisterContractProposal{}
+	_ govtypes.Content = &MsgModifyContractProposal{}
+	_ govtypes.Content = &MsgRemoveContractProposal{}
 )
 
 func init() {
 	govtypes.RegisterProposalType(UpdateParamsProposalType)
-	govtypes.RegisterProposalType(EnableContractExecutionProposalType)
-	govtypes.RegisterProposalType(DisableContractExecutionProposalType)
+	govtypes.RegisterProposalType(RegisterContractProposalType)
+	govtypes.RegisterProposalType(ModifyContractProposalType)
+	govtypes.RegisterProposalType(RemoveContractProposalType)
 }
 
 func NewMsgCreateAllianceProposal(
@@ -58,24 +61,26 @@ func (m *MsgUpdateParamsProposal) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgEnableContractExecutionProposal(
+func NewMsgRegisterContractProposal(
 	title, description, authority string,
 	contractDeposit sdk.Coin,
 	contractAddr string,
-	execution ExecutionType,
+	executiontType ExecutionType,
+	executionBlocksFrequency int64,
 ) govtypes.Content {
-	return &MsgEnableContractExecutionProposal{
-		Title:           title,
-		Description:     description,
-		Authority:       authority,
-		ContractDeposit: contractDeposit,
-		ContractAddr:    contractAddr,
-		Execution:       execution,
+	return &MsgRegisterContractProposal{
+		Title:                    title,
+		Description:              description,
+		Authority:                authority,
+		ContractDeposit:          contractDeposit,
+		ContractAddr:             contractAddr,
+		ExecutionType:            executiontType,
+		ExecutionBlocksFrequency: executionBlocksFrequency,
 	}
 }
-func (m *MsgEnableContractExecutionProposal) ProposalRoute() string { return RouterKey }
-func (m *MsgEnableContractExecutionProposal) ProposalType() string  { return UpdateParamsProposalType }
-func (m *MsgEnableContractExecutionProposal) ValidateBasic() error {
+func (m *MsgRegisterContractProposal) ProposalRoute() string { return RouterKey }
+func (m *MsgRegisterContractProposal) ProposalType() string  { return UpdateParamsProposalType }
+func (m *MsgRegisterContractProposal) ValidateBasic() error {
 	if m.Title == "" {
 		return ErrorTitleCannotBeEmptry
 	}
@@ -90,25 +95,57 @@ func (m *MsgEnableContractExecutionProposal) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgDisableContractExecutionProposal(
+func NewMsgModifyContractProposal(
+	title, description, authority string,
+	contractAddr string,
+	executiontType ExecutionType,
+	operation ExecutionTypeOperation,
+	executionBlocksFrequency int64,
+) govtypes.Content {
+	return &MsgModifyContractProposal{
+		Title:                    title,
+		Description:              description,
+		Authority:                authority,
+		ContractAddr:             contractAddr,
+		ExecutionType:            executiontType,
+		Operation:                operation,
+		ExecutionBlocksFrequency: executionBlocksFrequency,
+	}
+}
+func (m *MsgModifyContractProposal) ProposalRoute() string { return RouterKey }
+func (m *MsgModifyContractProposal) ProposalType() string  { return UpdateParamsProposalType }
+func (m *MsgModifyContractProposal) ValidateBasic() error {
+	if m.Title == "" {
+		return ErrorTitleCannotBeEmptry
+	}
+	if m.Description == "" {
+		return ErrorDescriptionCannotBeEmptry
+	}
+
+	if _, err := sdk.AccAddressFromBech32(m.ContractAddr); err != nil {
+		return ErrorInvalidContractAddr
+	}
+
+	return nil
+}
+
+func NewMsgRemoveContractProposal(
 	title, description, authority string,
 	contractDeposit sdk.Coin,
 	contractAddr string,
-	execution ExecutionType,
 	depositRefundAccount string,
 ) govtypes.Content {
-	return &MsgDisableContractExecutionProposal{
+	return &MsgRemoveContractProposal{
 		Title:                title,
 		Description:          description,
 		Authority:            authority,
 		ContractAddr:         contractAddr,
-		Execution:            execution,
 		DepositRefundAccount: depositRefundAccount,
 	}
 }
-func (m *MsgDisableContractExecutionProposal) ProposalRoute() string { return RouterKey }
-func (m *MsgDisableContractExecutionProposal) ProposalType() string  { return UpdateParamsProposalType }
-func (m *MsgDisableContractExecutionProposal) ValidateBasic() error {
+func (m *MsgRemoveContractProposal) ProposalRoute() string { return RouterKey }
+func (m *MsgRemoveContractProposal) ProposalType() string  { return UpdateParamsProposalType }
+func (m *MsgRemoveContractProposal) ValidateBasic() error {
 	if m.Title == "" {
 		return ErrorTitleCannotBeEmptry
 	}
