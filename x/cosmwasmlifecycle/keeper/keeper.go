@@ -135,7 +135,7 @@ func (k Keeper) deleteContractAndBurnDeposit(ctx sdk.Context, contractAddr sdk.A
 		return err
 	}
 
-	err = EmitContractDeleteEvent(ctx, contractAddr)
+	err = EmitForceRemoveContractEvent(ctx, contractAddr)
 	if err != nil {
 		return err
 	}

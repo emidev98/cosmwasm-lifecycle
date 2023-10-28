@@ -38,18 +38,33 @@ func (s msgServer) RegisterContract(ctx context.Context, msg *types.MsgRegisterC
 	}
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	contractAddr, err := sdk.AccAddressFromBech32(msg.GetContractAddr())
+	if err != nil {
+		return nil, err
+	}
+
 	_, found := s.Keeper.GetContract(sdkCtx, sdk.MustAccAddressFromBech32(msg.GetContractAddr()))
 	if found {
 		return nil, types.ErrorContractAlreadyExists
 	}
 
 	contract := types.NewCleanContract(msg.GetExecutionType(), msg.GetExecutionBlocksFrequency(), msg.ContractDeposit)
+
 	// store contract
-	s.Keeper.SetContract(sdkCtx,
-		sdk.AccAddress(msg.GetContractAddr()),
-		contract,
+	s.Keeper.SetContract(sdkCtx, contractAddr, contract)
+
+	// Construct and e mit the contract register event
+	err = EmitRegisterContractEvent(
+		sdkCtx,
+		contractAddr,
+		msg.ContractDeposit,
+		msg.GetExecutionType(),
+		msg.GetExecutionBlocksFrequency(),
 	)
-	// TODO: emit contract enabled event
+	if err != nil {
+		return nil, err
+	}
+
 	return res, err
 }
 
@@ -60,7 +75,12 @@ func (s msgServer) ModifyContract(ctx context.Context, msg *types.MsgModifyContr
 	}
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	contract, found := s.Keeper.GetContract(sdkCtx, sdk.MustAccAddressFromBech32(msg.GetContractAddr()))
+	contractAddr, err := sdk.AccAddressFromBech32(msg.GetContractAddr())
+	if err != nil {
+		return nil, err
+	}
+
+	contract, found := s.Keeper.GetContract(sdkCtx, contractAddr)
 	if !found {
 		return nil, types.ErrorContractNotFoundWithAddress
 	}
@@ -93,9 +113,20 @@ func (s msgServer) ModifyContract(ctx context.Context, msg *types.MsgModifyContr
 	}
 	// Override the execution frequency
 	contract.ExecutionFrequency = msg.GetExecutionBlocksFrequency()
+
 	// store contract
-	s.Keeper.SetContract(sdkCtx, sdk.MustAccAddressFromBech32(msg.GetContractAddr()), contract)
-	// TODO: emit contract modify event
+	s.Keeper.SetContract(sdkCtx, contractAddr, contract)
+
+	// Construct and e mit the contract modification event
+	err = EmitModifyContractEvent(
+		sdkCtx,
+		contractAddr,
+		msg.GetExecutionType(),
+		msg.GetExecutionBlocksFrequency(),
+	)
+	if err != nil {
+		return nil, err
+	}
 
 	return res, err
 }
@@ -106,30 +137,49 @@ func (s msgServer) RemoveContract(ctx context.Context, msg *types.MsgRemoveContr
 		return nil, types.ErrorInvalidAuthority
 	}
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	contract, found := s.Keeper.GetContract(sdkCtx, sdk.MustAccAddressFromBech32(msg.GetContractAddr()))
+	contractAddr, err := sdk.AccAddressFromBech32(msg.GetContractAddr())
+	if err != nil {
+		return nil, err
+	}
 
+	contract, found := s.Keeper.GetContract(sdkCtx, contractAddr)
 	if !found {
 		return nil, types.ErrorContractNotFoundWithAddress
 	}
 
-	s.Keeper.DeleteContract(sdkCtx, sdk.AccAddress(msg.GetContractAddr()))
+	refundAccount := sdk.AccAddress(msg.DepositRefundAccount)
+	s.Keeper.DeleteContract(sdkCtx, contractAddr)
 	err = s.bankKeeper.SendCoinsFromModuleToAccount(
 		sdkCtx,
 		types.ModuleName,
-		sdk.AccAddress(msg.DepositRefundAccount),
+		refundAccount,
 		sdk.NewCoins(contract.Deposit),
 	)
 	if err != nil {
 		return nil, err
 	}
-	// TODO: emit contract removed event
+
+	// Construct and e mit the contract modification event
+	err = EmitRemoveContractEvent(
+		sdkCtx,
+		contractAddr,
+		refundAccount,
+		contract.Deposit,
+	)
+	if err != nil {
+		return nil, err
+	}
 	return res, err
 }
 
 // Fund existent contract execution.
 func (s msgServer) FundExistentContract(ctx context.Context, msg *types.MsgFundExistentContract) (res *types.MsgFundExistentContractResponse, err error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	contract, found := s.Keeper.GetContract(sdkCtx, sdk.MustAccAddressFromBech32(msg.GetContractAddr()))
+	contractAddr, err := sdk.AccAddressFromBech32(msg.GetContractAddr())
+	if err != nil {
+		return nil, err
+	}
+	contract, found := s.Keeper.GetContract(sdkCtx, contractAddr)
 	if !found {
 		return nil, types.ErrorContractNotFoundWithAddress
 	}
@@ -139,7 +189,16 @@ func (s msgServer) FundExistentContract(ctx context.Context, msg *types.MsgFundE
 	}
 	contract.Deposit = contract.Deposit.Add(msg.Deposit)
 	// store contract
-	s.Keeper.SetContract(sdkCtx, sdk.MustAccAddressFromBech32(msg.GetContractAddr()), contract)
+	s.Keeper.SetContract(sdkCtx, contractAddr, contract)
+
+	err = EmitFundExistentContractEvent(sdkCtx,
+		contractAddr,
+		sdk.MustAccAddressFromBech32(msg.Sender),
+		msg.Deposit,
+	)
+	if err != nil {
+		return nil, err
+	}
 
 	return res, err
 }
