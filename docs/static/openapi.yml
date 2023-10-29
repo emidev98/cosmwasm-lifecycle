@@ -34923,10 +34923,10 @@ paths:
           format: int64
       tags:
         - Query
-  /cosmwasmlifecycle/params:
+  /lifecycle_hooks/params:
     get:
       summary: Parameters queries the parameters of the module.
-      operationId: Emidev98CosmwasmlifecycleParams
+      operationId: Emidev98LifecycleHooksParams
       responses:
         '200':
           description: A successful response.
@@ -70593,30 +70593,30 @@ definitions:
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
     description: Period defines a length of time and amount of coins that will vest.
-  emidev98.cosmwasmlifecycle.ExecutionType:
+  emidev98.lifecycle_hooks.ExecutionType:
     type: string
     enum:
       - BEGIN_BLOCK
       - END_BLOCK
       - BEGIN_AND_END_BLOCK
     default: BEGIN_BLOCK
-  emidev98.cosmwasmlifecycle.ExecutionTypeOperation:
+  emidev98.lifecycle_hooks.ExecutionTypeOperation:
     type: string
     enum:
       - ENABLE
       - DISABLE
     default: ENABLE
-  emidev98.cosmwasmlifecycle.MsgFundExistentContractResponse:
+  emidev98.lifecycle_hooks.MsgFundExistentContractResponse:
     type: object
-  emidev98.cosmwasmlifecycle.MsgModifyContractProposalResponse:
+  emidev98.lifecycle_hooks.MsgModifyContractProposalResponse:
     type: object
-  emidev98.cosmwasmlifecycle.MsgRegisterContractProposalResponse:
+  emidev98.lifecycle_hooks.MsgRegisterContractProposalResponse:
     type: object
-  emidev98.cosmwasmlifecycle.MsgRemoveContractProposalResponse:
+  emidev98.lifecycle_hooks.MsgRemoveContractProposalResponse:
     type: object
-  emidev98.cosmwasmlifecycle.MsgUpdateParamsProposalResponse:
+  emidev98.lifecycle_hooks.MsgUpdateParamsProposalResponse:
     type: object
-  emidev98.cosmwasmlifecycle.Params:
+  emidev98.lifecycle_hooks.Params:
     type: object
     properties:
       is_enabled:
@@ -70645,7 +70645,7 @@ definitions:
           disabled from end and beging block executions.
            When this happens the min_desposit will also be burned.
     description: Params defines the parameters for the module.
-  emidev98.cosmwasmlifecycle.QueryParamsResponse:
+  emidev98.lifecycle_hooks.QueryParamsResponse:
     type: object
     properties:
       params:

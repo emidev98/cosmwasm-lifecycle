@@ -36,7 +36,7 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/emidev98/cosmwasm-lifecycle/app"
+	"github.com/emidev98/lifecycle-hooks/app"
 )
 
 type storeKeysPrefixes struct {

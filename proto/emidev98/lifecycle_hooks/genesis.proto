@@ -1,0 +1,18 @@
+syntax = "proto3";
+package emidev98.lifecycle_hooks;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "emidev98/lifecycle_hooks/params.proto";
+import "emidev98/lifecycle_hooks/contract.proto";
+
+option go_package = "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/types";
+
+// GenesisState defines the lifecycle_hooks module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  
+  // Contracts with their current information
+  // about the execution state.
+  repeated Contract contracts = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}

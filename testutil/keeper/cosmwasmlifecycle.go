@@ -11,12 +11,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/keeper"
-	"github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types"
+	"github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/keeper"
+	"github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/types"
 	"github.com/stretchr/testify/require"
 )
 
-func CosmwasmlifecycleKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
+func LifecycleHooksKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	storeKey := sdk.NewKVStoreKey(types.StoreKey)
 	memStoreKey := storetypes.NewMemoryStoreKey(types.MemStoreKey)
 

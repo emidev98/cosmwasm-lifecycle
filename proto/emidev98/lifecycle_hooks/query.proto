@@ -1,0 +1,28 @@
+syntax = "proto3";
+package emidev98.lifecycle_hooks;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "emidev98/lifecycle_hooks/params.proto";
+
+option go_package = "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/types";
+
+
+// TODO: add remaining module query RPC methods
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/lifecycle_hooks/params";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}

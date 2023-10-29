@@ -111,9 +111,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 
-	cosmwasmlifecyclemodule "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle"
-	cosmwasmlifecyclemodulekeeper "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/keeper"
-	cosmwasmlifecyclemoduletypes "github.com/emidev98/cosmwasm-lifecycle/x/cosmwasmlifecycle/types"
+	lifecyclehooksmodule "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks"
+	lifecyclehooksmodulekeeper "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/keeper"
+	lifecyclehooksmoduletypes "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/types"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
@@ -121,13 +121,13 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
-	appparams "github.com/emidev98/cosmwasm-lifecycle/app/params"
-	"github.com/emidev98/cosmwasm-lifecycle/docs"
+	appparams "github.com/emidev98/lifecycle-hooks/app/params"
+	"github.com/emidev98/lifecycle-hooks/docs"
 )
 
 const (
 	AccountAddressPrefix = "cosmos"
-	Name                 = "cosmwasm-lifecycle"
+	Name                 = "lifecycle-hooks"
 )
 
 // this line is used by starport scaffolding # stargate/wasm/app/enabledProposals
@@ -179,21 +179,21 @@ var (
 		ica.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		consensus.AppModuleBasic{},
-		cosmwasmlifecyclemodule.AppModuleBasic{},
+		lifecyclehooksmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:              nil,
-		distrtypes.ModuleName:                   nil,
-		icatypes.ModuleName:                     nil,
-		minttypes.ModuleName:                    {authtypes.Minter},
-		stakingtypes.BondedPoolName:             {authtypes.Burner, authtypes.Staking},
-		stakingtypes.NotBondedPoolName:          {authtypes.Burner, authtypes.Staking},
-		govtypes.ModuleName:                     {authtypes.Burner},
-		ibctransfertypes.ModuleName:             {authtypes.Minter, authtypes.Burner},
-		cosmwasmlifecyclemoduletypes.ModuleName: {authtypes.Burner},
+		authtypes.FeeCollectorName:           nil,
+		distrtypes.ModuleName:                nil,
+		icatypes.ModuleName:                  nil,
+		minttypes.ModuleName:                 {authtypes.Minter},
+		stakingtypes.BondedPoolName:          {authtypes.Burner, authtypes.Staking},
+		stakingtypes.NotBondedPoolName:       {authtypes.Burner, authtypes.Staking},
+		govtypes.ModuleName:                  {authtypes.Burner},
+		ibctransfertypes.ModuleName:          {authtypes.Minter, authtypes.Burner},
+		lifecyclehooksmoduletypes.ModuleName: {authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -257,7 +257,7 @@ type App struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
-	CosmwasmlifecycleKeeper cosmwasmlifecyclemodulekeeper.Keeper
+	LifecycleHooksKeeper lifecyclehooksmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -304,7 +304,7 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibcexported.StoreKey, upgradetypes.StoreKey,
 		feegrant.StoreKey, evidencetypes.StoreKey, ibctransfertypes.StoreKey, icahosttypes.StoreKey,
 		capabilitytypes.StoreKey, group.StoreKey, icacontrollertypes.StoreKey, consensusparamtypes.StoreKey,
-		cosmwasmlifecyclemoduletypes.StoreKey,
+		lifecyclehooksmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -555,14 +555,14 @@ func New(
 		GetWasmOpts(app, appOpts)...,
 	)
 
-	app.CosmwasmlifecycleKeeper = *cosmwasmlifecyclemodulekeeper.NewKeeper(
+	app.LifecycleHooksKeeper = *lifecyclehooksmodulekeeper.NewKeeper(
 		appCodec,
-		keys[cosmwasmlifecyclemoduletypes.StoreKey],
+		keys[lifecyclehooksmoduletypes.StoreKey],
 		app.WasmKeeper,
 		app.BankKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	cosmwasmlifecycleModule := cosmwasmlifecyclemodule.NewAppModule(appCodec, app.CosmwasmlifecycleKeeper, app.WasmKeeper)
+	lifecyclehooksModule := lifecyclehooksmodule.NewAppModule(appCodec, app.LifecycleHooksKeeper, app.WasmKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -625,7 +625,7 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		icaModule,
-		cosmwasmlifecycleModule,
+		lifecyclehooksModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
@@ -658,7 +658,7 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		cosmwasmlifecyclemoduletypes.ModuleName,
+		lifecyclehooksmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -684,7 +684,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		cosmwasmlifecyclemoduletypes.ModuleName,
+		lifecyclehooksmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -715,7 +715,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		cosmwasmlifecyclemoduletypes.ModuleName,
+		lifecyclehooksmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -940,7 +940,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
-	paramsKeeper.Subspace(cosmwasmlifecyclemoduletypes.ModuleName)
+	paramsKeeper.Subspace(lifecyclehooksmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

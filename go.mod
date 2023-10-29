@@ -1,4 +1,4 @@
-module github.com/emidev98/cosmwasm-lifecycle
+module github.com/emidev98/lifecycle-hooks
 
 go 1.19
 

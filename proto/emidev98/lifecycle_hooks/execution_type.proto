@@ -1,0 +1,15 @@
+syntax = "proto3";
+package emidev98.lifecycle_hooks;
+
+option go_package = "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/types";
+
+enum ExecutionType {
+    BEGIN_BLOCK = 0;
+    END_BLOCK = 1;
+    BEGIN_AND_END_BLOCK = 2;
+}
+
+enum ExecutionTypeOperation {
+    ENABLE = 0;
+    DISABLE = 1;
+}

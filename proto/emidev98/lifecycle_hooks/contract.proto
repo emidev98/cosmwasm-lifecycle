@@ -1,0 +1,26 @@
+syntax = "proto3";
+package emidev98.lifecycle_hooks;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/base/v1beta1/coin.proto";
+import "emidev98/lifecycle_hooks/execution_type.proto";
+
+option go_package = "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/types";
+
+// Contract defines the parameters for the module.
+message Contract {
+  // Contract's execution type
+  ExecutionType execution_type = 1;
+  // Execution frequency 
+  int64 execution_frequency = 2;
+  // Latest block execution
+  int64 latest_block_execution = 3;
+  // Amount of strikes that the contract has at the moment.
+  int64 strikes = 4;
+  // Collateral deposited to the contract.
+  cosmos.base.v1beta1.Coin deposit = 5 [
+    (gogoproto.nullable) = false,
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin"
+  ];
+}
