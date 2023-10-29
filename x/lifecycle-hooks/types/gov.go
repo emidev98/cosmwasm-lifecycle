@@ -17,6 +17,11 @@ var (
 	_ govtypes.Content = &MsgRegisterContractProposal{}
 	_ govtypes.Content = &MsgModifyContractProposal{}
 	_ govtypes.Content = &MsgRemoveContractProposal{}
+
+	_ sdk.Msg = &MsgUpdateParamsProposal{}
+	_ sdk.Msg = &MsgRegisterContractProposal{}
+	_ sdk.Msg = &MsgModifyContractProposal{}
+	_ sdk.Msg = &MsgRemoveContractProposal{}
 )
 
 func init() {
@@ -42,6 +47,16 @@ func NewMsgCreateAllianceProposal(
 			StrikesToDisableExecution: strikesToDisableExecution,
 		},
 	}
+}
+func (m MsgUpdateParamsProposal) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+func (m MsgUpdateParamsProposal) GetSigners() []sdk.AccAddress {
+	signer, err := sdk.AccAddressFromBech32(m.Authority)
+	if err != nil {
+		panic(ErrorInvalidSigner)
+	}
+	return []sdk.AccAddress{signer}
 }
 func (m *MsgUpdateParamsProposal) ProposalRoute() string { return RouterKey }
 func (m *MsgUpdateParamsProposal) ProposalType() string  { return UpdateParamsProposalType }
@@ -78,6 +93,16 @@ func NewMsgRegisterContractProposal(
 		ExecutionBlocksFrequency: executionBlocksFrequency,
 	}
 }
+func (m MsgRegisterContractProposal) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+func (m MsgRegisterContractProposal) GetSigners() []sdk.AccAddress {
+	signer, err := sdk.AccAddressFromBech32(m.Authority)
+	if err != nil {
+		panic(ErrorInvalidSigner)
+	}
+	return []sdk.AccAddress{signer}
+}
 func (m *MsgRegisterContractProposal) ProposalRoute() string { return RouterKey }
 func (m *MsgRegisterContractProposal) ProposalType() string  { return UpdateParamsProposalType }
 func (m *MsgRegisterContractProposal) ValidateBasic() error {
@@ -112,6 +137,16 @@ func NewMsgModifyContractProposal(
 		ExecutionBlocksFrequency: executionBlocksFrequency,
 	}
 }
+func (m MsgModifyContractProposal) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+func (m MsgModifyContractProposal) GetSigners() []sdk.AccAddress {
+	signer, err := sdk.AccAddressFromBech32(m.Authority)
+	if err != nil {
+		panic(ErrorInvalidSigner)
+	}
+	return []sdk.AccAddress{signer}
+}
 func (m *MsgModifyContractProposal) ProposalRoute() string { return RouterKey }
 func (m *MsgModifyContractProposal) ProposalType() string  { return UpdateParamsProposalType }
 func (m *MsgModifyContractProposal) ValidateBasic() error {
@@ -142,6 +177,16 @@ func NewMsgRemoveContractProposal(
 		ContractAddr:         contractAddr,
 		DepositRefundAccount: depositRefundAccount,
 	}
+}
+func (m MsgRemoveContractProposal) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+func (m MsgRemoveContractProposal) GetSigners() []sdk.AccAddress {
+	signer, err := sdk.AccAddressFromBech32(m.Authority)
+	if err != nil {
+		panic(ErrorInvalidSigner)
+	}
+	return []sdk.AccAddress{signer}
 }
 func (m *MsgRemoveContractProposal) ProposalRoute() string { return RouterKey }
 func (m *MsgRemoveContractProposal) ProposalType() string  { return UpdateParamsProposalType }
