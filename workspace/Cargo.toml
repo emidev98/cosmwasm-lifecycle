@@ -1,0 +1,31 @@
+[workspace]
+members = [
+  "contracts/error",
+  "contracts/success",
+  "packages/models",
+]
+
+[workspace.package]
+version           = "1.0.0"
+edition           = "2021"
+authors           = ["emidev98 <emilian@terra.money>"]
+license           = "Apache-2.0"
+repository        = "https://github.com/emidev98/lifecycle-hooks/contracts"
+homepage          = "https://github.com/emidev98/lifecycle-hooks/contracts"
+documentation     = "https://github.com/emidev98/lifecycle-hooks/contracts"
+rust-version      = "1.73"
+
+
+[workspace.dependencies]
+cosmwasm-std      = "1.4.1"
+cosmwasm-schema   = "1.4.1"
+serde             = { version = "1.0.190", default-features = false, features = ["derive"] }
+models            = { path = "packages/models" }
+
+[profile.release]
+rpath             = false
+lto               = true
+overflow-checks   = true
+opt-level         = 3
+debug             = false
+debug-assertions  = false

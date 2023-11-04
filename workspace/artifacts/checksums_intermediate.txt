@@ -1,0 +1,2 @@
+b88a7471967023c96761ae8d00319bed81cc2ca73a9e6b8daa7ad48e1501b930  target/wasm32-unknown-unknown/release/error.wasm
+e18c372ff2ac3790987d359f3d6cd8e2bd088d85392c5fbc2f8668262b2a4341  target/wasm32-unknown-unknown/release/success.wasm

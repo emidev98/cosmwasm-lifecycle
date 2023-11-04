@@ -1,0 +1,21 @@
+[package]
+name            = "success"
+description     = "Smart Contract example of a successful execution"
+version         = { workspace = true }
+edition         = { workspace = true }
+license         = { workspace = true }
+repository      = { workspace = true }
+homepage        = { workspace = true }
+documentation   = { workspace = true }
+
+[lib]
+crate-type      = ["cdylib", "rlib"]
+
+[features]
+backtraces      = ["cosmwasm-std/backtraces"]
+library         = []
+
+[dependencies]
+cosmwasm-std    = { workspace = true }
+cosmwasm-schema = { workspace = true }
+models          = { workspace = true }

@@ -34,6 +34,7 @@ func LifecycleHooksKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		storeKey,
 		wasmKeeper,
 		bankKeeper,
+		authorityAddr,
 	)
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
