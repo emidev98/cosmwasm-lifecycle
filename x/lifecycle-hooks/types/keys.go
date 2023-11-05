@@ -20,8 +20,8 @@ const (
 )
 
 var (
-	ParamKey    = []byte{0x01}
-	ContractKey = []byte{0x02}
+	ParamKey     = []byte{0x01}
+	ContractsKey = []byte{0x02}
 )
 
 func KeyPrefix(p string) []byte {
@@ -30,5 +30,5 @@ func KeyPrefix(p string) []byte {
 
 // GetContractKeyByAddress returns the key for the contract
 func GetContractKeyByAddress(contractAddr sdk.AccAddress) []byte {
-	return append(ContractKey, address.MustLengthPrefix(contractAddr)...)
+	return append(ContractsKey, address.MustLengthPrefix(contractAddr)...)
 }

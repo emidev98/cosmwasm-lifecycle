@@ -29,7 +29,7 @@ func (k Keeper) DeleteContract(ctx sdk.Context, contractAddr sdk.AccAddress) {
 
 func (k Keeper) IterateContracts(ctx sdk.Context, cb func(contractAddr sdk.AccAddress, contract types.Contract) error) (err error) {
 	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.ContractKey)
+	iter := sdk.KVStorePrefixIterator(store, types.ContractsKey)
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		var contract types.Contract

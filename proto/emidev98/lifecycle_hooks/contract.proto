@@ -8,8 +8,11 @@ import "emidev98/lifecycle_hooks/execution_type.proto";
 
 option go_package = "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/types";
 
-// Contract defines the parameters for the module.
+// Contract defines the main object used in the module to store it's state.
 message Contract {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters) = true;
+
   // Contract's execution type
   ExecutionType execution_type = 1;
   // Execution frequency 
@@ -23,4 +26,14 @@ message Contract {
     (gogoproto.nullable) = false,
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin"
   ];
+}
+
+// GenesisContract is the genesis state of the module, including the relation 
+// between the contract address and the contract state itself.
+message GenesisContract {
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_getters) = true;
+
+  string contract_address = 1;
+  Contract contract = 2[(gogoproto.nullable) = false];
 }

@@ -5,24 +5,55 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "emidev98/lifecycle_hooks/params.proto";
+import "emidev98/lifecycle_hooks/contract.proto";
 
 option go_package = "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/types";
 
 
-// TODO: add remaining module query RPC methods
 // Query defines the gRPC querier service.
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/lifecycle_hooks/params";
+    option (google.api.http).get = "/emidev98/lifecycle_hooks/params";
+  }
+  // Contracts queries all the contracts of the module with pagination.
+  rpc Contracts(QueryContractsRequest) returns (QueryContractsResponse) {
+    option (google.api.http).get = "/emidev98/lifecycle_hooks/Contracts";
+  }
+  // Query a specific contract by contract_address
+  rpc Contract(QueryContractRequest) returns (QueryContractResponse) {
+    option (google.api.http).get = "/emidev98/lifecycle_hooks/Contracts/{contract_address}";
   }
 }
 
-// QueryParamsRequest is request type for the Query/Params RPC method.
+// Query the params of the module
 message QueryParamsRequest {}
 
-// QueryParamsResponse is response type for the Query/Params RPC method.
+// Response with the params of the module
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// Query all the contracts of the module
+message QueryContractsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// Response with the params of the module
+message QueryContractsResponse {
+  // params holds all the parameters of this module.
+  repeated Contract contracts = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// Query all the contracts of the module
+message QueryContractRequest {
+  string contract_address = 1;
+}
+
+// Response with the params of the module
+message QueryContractResponse {
+  // params holds all the parameters of this module.
+  Contract contract = 1 [(gogoproto.nullable) = false];
 }
