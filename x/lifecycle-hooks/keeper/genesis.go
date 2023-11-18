@@ -10,13 +10,17 @@ import (
 func (k Keeper) InitGenesis(ctx sdk.Context, g types.GenesisState) []abci.ValidatorUpdate {
 	k.SetParams(ctx, g.Params)
 
-	for _, val := range g.Contracts {
-		contractAddress, err := sdk.AccAddressFromBech32(val.ContractAddress)
-		if err != nil {
-			panic(errors.Wrap(types.ErrorInvalidContractAddr, val.ContractAddress))
-		}
+	if g.Contracts == nil {
+		g.Contracts = []*types.GenesisContract{}
+	} else {
+		for _, val := range g.Contracts {
+			contractAddress, err := sdk.AccAddressFromBech32(val.ContractAddress)
+			if err != nil {
+				panic(errors.Wrap(types.ErrorInvalidContractAddr, val.ContractAddress))
+			}
 
-		k.SetContract(ctx, contractAddress, val.Contract)
+			k.SetContract(ctx, contractAddress, val.Contract)
+		}
 	}
 
 	return []abci.ValidatorUpdate{}

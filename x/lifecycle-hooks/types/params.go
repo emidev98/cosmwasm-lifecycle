@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
@@ -14,7 +15,11 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // NewParams creates a new Params instance
 func NewParams() Params {
-	return Params{}
+	return Params{
+		IsEnabled:                 true,
+		MinDeposit:                types.NewCoin("stake", types.NewInt(10000_000000)),
+		StrikesToDisableExecution: 10,
+	}
 }
 
 // DefaultParams returns a default set of parameters

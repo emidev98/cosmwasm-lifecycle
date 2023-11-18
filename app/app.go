@@ -111,9 +111,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 
-	lifecyclehooksmodule "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks"
-	lifecyclehooksmodulekeeper "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/keeper"
-	lifecyclehooksmoduletypes "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/types"
+	lifecyclehook "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks"
+	lifecyclehookkeeper "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/keeper"
+	lifecyclehooktypes "github.com/emidev98/lifecycle-hooks/x/lifecycle-hooks/types"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
@@ -179,21 +179,21 @@ var (
 		ica.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		consensus.AppModuleBasic{},
-		lifecyclehooksmodule.AppModuleBasic{},
+		lifecyclehook.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:           nil,
-		distrtypes.ModuleName:                nil,
-		icatypes.ModuleName:                  nil,
-		minttypes.ModuleName:                 {authtypes.Minter},
-		stakingtypes.BondedPoolName:          {authtypes.Burner, authtypes.Staking},
-		stakingtypes.NotBondedPoolName:       {authtypes.Burner, authtypes.Staking},
-		govtypes.ModuleName:                  {authtypes.Burner},
-		ibctransfertypes.ModuleName:          {authtypes.Minter, authtypes.Burner},
-		lifecyclehooksmoduletypes.ModuleName: {authtypes.Burner},
+		authtypes.FeeCollectorName:     nil,
+		distrtypes.ModuleName:          nil,
+		icatypes.ModuleName:            nil,
+		minttypes.ModuleName:           {authtypes.Minter},
+		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
+		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
+		govtypes.ModuleName:            {authtypes.Burner},
+		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
+		lifecyclehooktypes.ModuleName:  {authtypes.Burner},
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
 )
@@ -257,7 +257,7 @@ type App struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
-	LifecycleHooksKeeper lifecyclehooksmodulekeeper.Keeper
+	LifecycleHooksKeeper lifecyclehookkeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -304,7 +304,7 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibcexported.StoreKey, upgradetypes.StoreKey,
 		feegrant.StoreKey, evidencetypes.StoreKey, ibctransfertypes.StoreKey, icahosttypes.StoreKey,
 		capabilitytypes.StoreKey, group.StoreKey, icacontrollertypes.StoreKey, consensusparamtypes.StoreKey,
-		lifecyclehooksmoduletypes.StoreKey,
+		lifecyclehooktypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -555,14 +555,14 @@ func New(
 		GetWasmOpts(app, appOpts)...,
 	)
 
-	app.LifecycleHooksKeeper = *lifecyclehooksmodulekeeper.NewKeeper(
+	app.LifecycleHooksKeeper = *lifecyclehookkeeper.NewKeeper(
 		appCodec,
-		keys[lifecyclehooksmoduletypes.StoreKey],
+		keys[lifecyclehooktypes.StoreKey],
 		app.WasmKeeper,
 		app.BankKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
-	lifecyclehooksModule := lifecyclehooksmodule.NewAppModule(appCodec, app.LifecycleHooksKeeper, app.WasmKeeper)
+	lifecyclehook := lifecyclehook.NewAppModule(appCodec, app.LifecycleHooksKeeper, app.WasmKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -625,7 +625,7 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		icaModule,
-		lifecyclehooksModule,
+		lifecyclehook,
 		// this line is used by starport scaffolding # stargate/app/appModule
 
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
@@ -658,7 +658,7 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		lifecyclehooksmoduletypes.ModuleName,
+		lifecyclehooktypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -684,7 +684,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		lifecyclehooksmoduletypes.ModuleName,
+		lifecyclehooktypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -715,7 +715,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
-		lifecyclehooksmoduletypes.ModuleName,
+		lifecyclehooktypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -940,7 +940,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibcexported.ModuleName)
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
-	paramsKeeper.Subspace(lifecyclehooksmoduletypes.ModuleName)
+	paramsKeeper.Subspace(lifecyclehooktypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

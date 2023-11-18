@@ -18,11 +18,11 @@ service Query {
   }
   // Contracts queries all the contracts of the module with pagination.
   rpc Contracts(QueryContractsRequest) returns (QueryContractsResponse) {
-    option (google.api.http).get = "/emidev98/lifecycle_hooks/Contracts";
+    option (google.api.http).get = "/emidev98/lifecycle_hooks/contracts";
   }
   // Query a specific contract by contract_address
   rpc Contract(QueryContractRequest) returns (QueryContractResponse) {
-    option (google.api.http).get = "/emidev98/lifecycle_hooks/Contracts/{contract_address}";
+    option (google.api.http).get = "/emidev98/lifecycle_hooks/contracts/{contract_address}";
   }
 }
 

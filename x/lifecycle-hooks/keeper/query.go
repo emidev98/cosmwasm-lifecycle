@@ -18,6 +18,12 @@ type QueryServer struct {
 
 var _ types.QueryServer = QueryServer{}
 
+func NewQueryServerImpl(keeper Keeper) types.QueryServer {
+	return &QueryServer{
+		Keeper: keeper,
+	}
+}
+
 func (k QueryServer) Contracts(c context.Context, req *types.QueryContractsRequest) (res *types.QueryContractsResponse, err error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -51,7 +57,11 @@ func (k QueryServer) Contract(c context.Context, req *types.QueryContractRequest
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 
-	contract, _ := k.GetContract(ctx, contractAddress)
+	contract, found := k.GetContract(ctx, contractAddress)
+
+	if !found {
+		return res, nil
+	}
 	res.Contract = contract
 	return res, nil
 }
